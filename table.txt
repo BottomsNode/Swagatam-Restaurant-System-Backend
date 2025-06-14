@@ -1,0 +1,118 @@
+export class CategoryEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    name: string;
+
+    @OneToMany(() => MenuItemEntity, (menuItem) => menuItem.category)
+    menuItems: MenuItemEntity[];
+}
+
+export class CustomerEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    name: string;
+
+    @Column()
+    phone: string;
+
+    @Column()
+    email: string;
+
+    @OneToMany(() => OrderEntity, (order) => order.customer)
+    orders: OrderEntity[];
+}
+
+export class MenuItemEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    name: string;
+
+    @Column({ type: "decimal", precision: 10, scale: 2 })
+    price: number;
+
+    @Column({ default: 'empty' })
+    description: string;
+
+    @ManyToOne(() => CategoryEntity, (category) => category.menuItems)
+    category: CategoryEntity;
+
+    @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.menuItem)
+    orderItems: OrderItemEntity[];
+}
+
+export class OrderEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column({ type: 'timestamp' })
+    orderTime: Date;
+
+    @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+    totalAmount: number;
+
+    @Column({ default: 'PENDING' })
+    status: string;
+
+    @ManyToOne(() => CustomerEntity, (customer) => customer.orders)
+    customer: CustomerEntity;
+
+    @ManyToOne(() => TableEntity, (table) => table.orders)
+    table: TableEntity;
+
+    @ManyToOne(() => StaffEntity, (staff) => staff.orders)
+    staff: StaffEntity;
+
+    @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.order, { cascade: true })
+    items: OrderItemEntity[];
+}
+
+export class OrderItemEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @ManyToOne(() => OrderEntity, (order) => order.items)
+    order: OrderEntity;
+
+    @ManyToOne(() => MenuItemEntity, (menuItem) => menuItem.orderItems)
+    menuItem: MenuItemEntity;
+
+    @Column()
+    quantity: number;
+
+    @Column({ type: "decimal", precision: 10, scale: 2 })
+    priceAtOrder: number;
+}
+
+export class StaffEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    name: string;
+
+    @Column()
+    role: string;
+
+    @Column({ unique: true })
+    email: string;
+
+    @OneToMany(() => OrderEntity, (order) => order.staff)
+    orders: OrderEntity[];
+}
+
+export class TableEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    tableNumber: number;
+
+    @OneToMany(() => OrderEntity, (order) => order.table)
+    orders: OrderEntity[];
+}
