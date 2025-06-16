@@ -1,6 +1,6 @@
 import { AutoMap } from "@automapper/classes";
 
-export abstract class BaseDto {
+export class BaseDto {
     @AutoMap()
     isActive: boolean;
 

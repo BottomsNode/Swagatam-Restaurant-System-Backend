@@ -20,18 +20,23 @@ export class CustomerEntity {
     @Column()
     email: string
 
+    @AutoMap()
     @OneToMany(() => OrderEntity, (order) => order.customer)
     orders: OrderEntity[]
 
-    // @Column({ default: true })
-    // isActive: boolean;
+    @AutoMap()
+    @Column({ default: true })
+    isActive: boolean;
 
-    // @CreateDateColumn()
-    // createdAt: Date;
+    @AutoMap()
+    @CreateDateColumn()
+    createdAt: Date;
 
-    // @UpdateDateColumn()
-    // updatedAt: Date;
+    @AutoMap()
+    @UpdateDateColumn()
+    updatedAt: Date;
 
-    // @DeleteDateColumn()
-    // deletedAt: Date | null;
+    @AutoMap()
+    @DeleteDateColumn()
+    deletedAt: Date | null;
 }

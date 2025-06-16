@@ -15,6 +15,8 @@ import { AppDataSource } from './config/typeorm.config';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { CommonMapper } from './common/profile/common.mapper.service';
+import { CommonExceptionFilter } from './common/error/exception.handler';
+import { CustomerService } from './customer/customer.service';
 
 @Module({
   imports: [
@@ -44,7 +46,12 @@ import { CommonMapper } from './common/profile/common.mapper.service';
     StaffModule
   ],
   controllers: [AppController],
-  providers: [AppService, DatabaseService, CommonMapper],
+  providers: [
+    AppService,
+    DatabaseService,
+    CommonMapper,
+    CommonExceptionFilter
+  ],
   exports : [CommonMapper],
 })
 export class AppModule { }

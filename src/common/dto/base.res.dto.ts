@@ -6,4 +6,7 @@ export abstract class BaseResponseDto {
 
     @AutoMap()
     isActive: boolean;
+
+    @AutoMap()
+    createdAt?: Date;
 }

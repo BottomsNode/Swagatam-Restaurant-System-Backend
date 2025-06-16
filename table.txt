@@ -1,61 +1,126 @@
 export class CategoryEntity {
     @PrimaryGeneratedColumn()
+    @AutoMap()
     id: number;
 
     @Column()
+    @AutoMap()
     name: string;
 
-    @OneToMany(() => MenuItemEntity, (menuItem) => menuItem.category)
+    @AutoMap()
+    @OneToMany(()=> MenuItemEntity, (menuItem)=> menuItem.category)
     menuItems: MenuItemEntity[];
+
+    @AutoMap()
+    @Column({ default: true })
+    isActive: boolean;
+
+    @AutoMap()
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @AutoMap()
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @AutoMap()
+    @DeleteDateColumn()
+    deletedAt: Date | null;
 }
 
 export class CustomerEntity {
+    @AutoMap()
     @PrimaryGeneratedColumn()
     id: number;
 
+    @AutoMap()
     @Column()
-    name: string;
+    name: string
 
+    @AutoMap()
     @Column()
-    phone: string;
+    phone: string
 
+    @AutoMap()
     @Column()
-    email: string;
+    email: string
 
+    @AutoMap()
     @OneToMany(() => OrderEntity, (order) => order.customer)
-    orders: OrderEntity[];
+    orders: OrderEntity[]
+
+    @AutoMap()
+    @Column({ default: true })
+    isActive: boolean;
+
+    @AutoMap()
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @AutoMap()
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @AutoMap()
+    @DeleteDateColumn()
+    deletedAt: Date | null;
 }
 
 export class MenuItemEntity {
+    @AutoMap()
     @PrimaryGeneratedColumn()
     id: number;
 
+    @AutoMap()
     @Column()
-    name: string;
+    name: string
 
+    @AutoMap()
     @Column({ type: "decimal", precision: 10, scale: 2 })
-    price: number;
+    price: number
 
+    @AutoMap()
+    @Column({ default: 0 })
+    quantityAvailable: number;
+
+    @AutoMap()
     @Column({ default: 'empty' })
     description: string;
 
+    @AutoMap()
     @ManyToOne(() => CategoryEntity, (category) => category.menuItems)
     category: CategoryEntity;
 
+    @AutoMap()
     @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.menuItem)
     orderItems: OrderItemEntity[];
+
+    @Column({ default: true })
+    isActive: boolean;
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @DeleteDateColumn()
+    deletedAt: Date | null;
 }
 
 export class OrderEntity {
+    @AutoMap()
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({ type: 'timestamp' })
-    orderTime: Date;
+    orderTime: Date
 
+    @AutoMap()
     @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
     totalAmount: number;
 
+    @AutoMap()
     @Column({ default: 'PENDING' })
     status: string;
 
@@ -70,9 +135,26 @@ export class OrderEntity {
 
     @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.order, { cascade: true })
     items: OrderItemEntity[];
+
+    @Column({ default: true })
+    isActive: boolean;
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @DeleteDateColumn()
+    deletedAt: Date | null;
+
+    get totalItems(): number {
+        return this.items.reduce((total, item) => total + item.quantity, 0);
+    }
 }
 
 export class OrderItemEntity {
+    @AutoMap()
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -82,37 +164,86 @@ export class OrderItemEntity {
     @ManyToOne(() => MenuItemEntity, (menuItem) => menuItem.orderItems)
     menuItem: MenuItemEntity;
 
-    @Column()
+    @AutoMap()
+    @Column({ default: 0 })
     quantity: number;
 
+    @AutoMap()
     @Column({ type: "decimal", precision: 10, scale: 2 })
     priceAtOrder: number;
+
+    @Column({ default: true })
+    isActive: boolean;
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @DeleteDateColumn()
+    deletedAt: Date | null;
 }
 
 export class StaffEntity {
+    @AutoMap()
     @PrimaryGeneratedColumn()
     id: number;
 
+    @AutoMap()
     @Column()
     name: string;
 
+    @AutoMap()
     @Column()
     role: string;
 
+    @AutoMap()
     @Column({ unique: true })
     email: string;
 
     @OneToMany(() => OrderEntity, (order) => order.staff)
     orders: OrderEntity[];
+
+    @Column({ default: true })
+    isActive: boolean;
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @DeleteDateColumn()
+    deletedAt: Date | null;
 }
 
 export class TableEntity {
+
+    @AutoMap()
     @PrimaryGeneratedColumn()
     id: number;
 
+    @AutoMap()
     @Column()
     tableNumber: number;
 
+    @AutoMap()
+    @Column({ default: 'AVAILABLE' })
+    status: string;
+
     @OneToMany(() => OrderEntity, (order) => order.table)
     orders: OrderEntity[];
+
+    @Column({ default: true })
+    isActive: boolean;
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @DeleteDateColumn()
+    deletedAt: Date | null;
 }

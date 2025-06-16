@@ -5,13 +5,20 @@ import { StaffEntity } from "src/staff/entities/staff..entity";
 import { TableEntity } from "src/table/entities/table.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
+export enum OrderStatus {
+    PENDING = 'PENDING',
+    IN_PROCESS = 'IN PROCESS',
+    COMPLETED = 'COMPLETED',
+    CANCELLED = 'CANCELLED',
+}
 @Entity()
 export class OrderEntity {
     @AutoMap()
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @AutoMap()
     orderTime: Date
 
     @AutoMap()
@@ -19,8 +26,8 @@ export class OrderEntity {
     totalAmount: number;
 
     @AutoMap()
-    @Column({ default: 'PENDING' })
-    status: string;
+    @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.PENDING })
+    status: OrderStatus;
 
     @ManyToOne(() => CustomerEntity, (customer) => customer.orders)
     customer: CustomerEntity;
@@ -34,15 +41,15 @@ export class OrderEntity {
     @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.order, { cascade: true })
     items: OrderItemEntity[];
 
-    // @Column({ default: true })
-    // isActive: boolean;
+    @Column({ default: true })
+    isActive: boolean;
 
-    // @CreateDateColumn()
-    // createdAt: Date;
+    @CreateDateColumn()
+    createdAt: Date;
 
-    // @UpdateDateColumn()
-    // updatedAt: Date;
+    @UpdateDateColumn()
+    updatedAt: Date;
 
-    // @DeleteDateColumn()
-    // deletedAt: Date | null;
+    @DeleteDateColumn()
+    deletedAt: Date | null;
 }

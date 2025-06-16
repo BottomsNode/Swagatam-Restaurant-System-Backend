@@ -1,9 +1,18 @@
 import { AutoMap } from "@automapper/classes";
-import { TableDto } from "./table.dto";
 import { OrderDto } from "src/order/dto/order.dto";
+import { ApiProperty } from "@nestjs/swagger";
+import { BaseResponseDto } from "src/common/dto/base.res.dto";
 
-export class TableResponseDto extends TableDto {
+export class TableResponseDto extends BaseResponseDto {
 
+    @AutoMap()
+    @ApiProperty()
+    tableNumber: number;
+
+    @AutoMap()
+    status : string;
+
+    @ApiProperty()
     @AutoMap()
     orders?: OrderDto[];
 }

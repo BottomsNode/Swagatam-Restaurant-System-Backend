@@ -18,6 +18,10 @@ export class MenuItemEntity {
     price: number
 
     @AutoMap()
+    @Column({ default: 20})
+    quantityAvailable: number;
+
+    @AutoMap()
     @Column({ default: 'empty' })
     description: string;
 
@@ -29,15 +33,15 @@ export class MenuItemEntity {
     @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.menuItem)
     orderItems: OrderItemEntity[];
 
-    // @Column({ default: true })
-    // isActive: boolean;
+    @Column({ default: true })
+    isActive: boolean;
 
-    // @CreateDateColumn()
-    // createdAt: Date;
+    @CreateDateColumn()
+    createdAt: Date;
 
-    // @UpdateDateColumn()
-    // updatedAt: Date;
+    @UpdateDateColumn()
+    updatedAt: Date;
 
-    // @DeleteDateColumn()
-    // deletedAt: Date | null;
+    @DeleteDateColumn()
+    deletedAt: Date | null;
 }

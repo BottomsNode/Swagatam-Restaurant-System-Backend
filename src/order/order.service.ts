@@ -1,4 +1,196 @@
-import { Injectable } from '@nestjs/common';
+import { Mapper } from '@automapper/core';
+import { InjectMapper } from '@automapper/nestjs';
+import { BadRequestException, HttpException, HttpStatus, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { IdParamDto } from 'src/common/dto/IdParam.dto';
+import { EntityManager, Repository } from 'typeorm';
+import { OrderResponseDto } from './dto/order.res.dto';
+import { OrderEntity, OrderStatus } from './entities/order.entity';
+import { CreateOrderDto } from './dto/order.create.dto';
+import { TableEntity, TableStatus } from 'src/table/entities/table.entity';
+import { MenuItemEntity } from 'src/menu-item/entities/menu_item.entity';
+import { CustomerEntity } from 'src/customer/entities/customer.entity';
+import { OrderItemEntity } from 'src/order-item/entities/order_item.entity';
+import { StaffEntity } from 'src/staff/entities/staff..entity';
 
 @Injectable()
-export class OrderService {}
+export class OrderService {
+
+    private readonly logger = new Logger(OrderService.name);
+
+    constructor(
+        @InjectRepository(OrderEntity) private readonly orderRepository: Repository<OrderEntity>,
+        @InjectRepository(OrderEntity) private readonly tableRepository: Repository<TableEntity>,
+        @InjectRepository(OrderEntity) private readonly menuItemRepository: Repository<MenuItemEntity>,
+        @InjectMapper() private readonly mapper: Mapper,
+    ) { }
+
+    async getAllOrder(): Promise<OrderResponseDto[]> {
+        const entities = await this.orderRepository.find({
+            relations: ['customer', 'table', 'staff', 'items'],
+            order: { id: 'ASC' },
+        });
+        if (!entities || entities.length === 0) {
+            throw new HttpException('No orders found', HttpStatus.NOT_FOUND);
+        }
+        return this.mapper.mapArray(entities, OrderEntity, OrderResponseDto);
+    }
+
+    async getOrder(data: IdParamDto): Promise<OrderResponseDto> {
+        const entity = await this.orderRepository.findOne({
+            where: { id: data.Id },
+            relations: ['customer', 'table', 'staff', 'items', 'items.menuItem', 'items.menuItem.category'],
+            order: { id: 'ASC' },
+        });
+        if (!entity) {
+            throw new HttpException(`Order with ID ${data.Id} not found`, HttpStatus.NOT_FOUND);
+        }
+        return this.mapper.map(entity, OrderEntity, OrderResponseDto);
+    }
+
+    async createOrder(createDto: CreateOrderDto): Promise<OrderResponseDto> {
+        return await this.orderRepository.manager.transaction(async (manager) => {
+            try {
+                // Create order entity
+                const entity = this.createOrderEntity(createDto);
+                console.log("Entity : ", entity);
+
+                // Map order items and set order relation
+                entity.items = this.mapOrderItems(createDto, entity);
+                console.log("Order items : ", entity.items);
+
+                // Validate and update menu item quantities
+                await this.validateAndUpdateMenuItems(entity.items, manager);
+
+                // Save the order (cascades to order items)
+                const savedEntity = await manager.save(OrderEntity, entity);
+                console.log("Saved Order", savedEntity);
+                this.logger.log(`Order saved: ${savedEntity.id}`);
+
+                // Schedule status update
+                this.scheduleStatusUpdate(savedEntity.id, manager);
+
+                // Map to response DTO
+                const response = this.mapper.map(savedEntity, OrderEntity, OrderResponseDto);
+                console.log("Response : " ,response);
+                return response;
+            } 
+            catch (error) {
+                this.logger.error(`Error creating order: ${error.message}`);
+                throw error instanceof BadRequestException || error instanceof NotFoundException
+                    ? error
+                    : new BadRequestException(`Failed to create order: ${error.message}`);
+            }
+        });
+    }
+
+    async updateOrder(params: IdParamDto, updateDto: CreateOrderDto): Promise<OrderResponseDto> {
+        const entity = await this.orderRepository.findOne({
+            where: { id: params.Id },
+        });
+        if (!entity) {
+            throw new HttpException(`Order with ID ${params.Id} not found`, HttpStatus.NOT_FOUND);
+        }
+        const updatedEntity = this.mapper.map(updateDto, CreateOrderDto, OrderEntity);
+        updatedEntity.id = params.Id;
+        await this.orderRepository.update(updatedEntity.id, updatedEntity);
+        const orderResponse = await this.orderRepository.findOne({
+            where: { id: params.Id },
+            relations: ['customer', 'table', 'staff', 'items'],
+        });
+        if (!orderResponse) {
+            throw new HttpException(`Failed to retrieve updated order with ID ${params.Id}`, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return this.mapper.map(orderResponse, OrderEntity, OrderResponseDto);
+    }
+
+    async deleteOrder(data: IdParamDto): Promise<void> {
+        const entity = await this.orderRepository.findOne({
+            where: { id: data.Id },
+        });
+        if (!entity) {
+            throw new HttpException(`Order with ID ${data.Id} not found`, HttpStatus.NOT_FOUND);
+        }
+        await this.orderRepository.softDelete(entity.id);;
+    }
+
+
+
+    /**
+     * Creates an OrderEntity from CreateOrderDto
+     */
+    private createOrderEntity(createDto: CreateOrderDto): OrderEntity {
+        const entity = new OrderEntity();
+        entity.orderTime = new Date();
+        entity.status = OrderStatus.IN_PROCESS;
+        entity.totalAmount = createDto.items.reduce((total, item) => {
+            return total + (item.priceAtOrder * item.quantity);
+        }, 0);
+        entity.customer = { id: createDto.customerId } as CustomerEntity;
+        entity.staff = { id: createDto.staffId } as StaffEntity;
+        return entity;
+    }
+
+    /**
+     * Maps order items from DTO and sets order relation
+     */
+    private mapOrderItems(createDto: CreateOrderDto, order: OrderEntity): OrderItemEntity[] {
+        return createDto.items.map(itemDto => {
+            const orderItem = new OrderItemEntity();
+            orderItem.menuItem = { id: itemDto.id } as MenuItemEntity;
+            orderItem.quantity = itemDto.quantity;
+            orderItem.priceAtOrder = itemDto.priceAtOrder;
+            orderItem.order = order; // Explicitly set order relation
+            return orderItem;
+        });
+    }
+
+    /**
+     * Validates and updates menu item quantities
+     */
+    private async validateAndUpdateMenuItems(
+        items: OrderItemEntity[],
+        manager: EntityManager,
+    ): Promise<void> {
+        for (const item of items) {
+            const menuItem = await manager.findOne(MenuItemEntity, {
+                where: { id: item.menuItem.id },
+            });
+            if (!menuItem) {
+                throw new NotFoundException(`Menu item with ID ${item.menuItem.id} not found.`);
+            }
+            if (menuItem.quantityAvailable < item.quantity) {
+                throw new BadRequestException(
+                    `Not enough quantity available for menu item ${menuItem.name}. Available: ${menuItem.quantityAvailable}, Requested: ${item.quantity}`,
+                );
+            }
+            menuItem.quantityAvailable -= item.quantity;
+            await manager.save(MenuItemEntity, menuItem);
+        }
+    }
+
+    /**
+     * Schedules order status update to COMPLETED after 1 minute
+     */
+    private scheduleStatusUpdate(orderId: number, manager: EntityManager): void {
+        setTimeout(async () => {
+            try {
+                await manager.transaction(async (innerManager) => {
+                    const freshOrder = await innerManager.findOne(OrderEntity, {
+                        where: { id: orderId },
+                        relations: ['items'],
+                    });
+                    if (freshOrder) {
+                        freshOrder.status = OrderStatus.COMPLETED;
+                        await innerManager.save(OrderEntity, freshOrder);
+                        this.logger.log(`Order ${freshOrder.id} status updated to COMPLETED`);
+                    } else {
+                        this.logger.error(`Order ${orderId} not found during status update`);
+                    }
+                });
+            } catch (resetError) {
+                this.logger.error(`Error during scheduled status reset: ${resetError.message}`);
+            }
+        }, 1 * 60 * 1000); // 1 minute delay
+    }
+}

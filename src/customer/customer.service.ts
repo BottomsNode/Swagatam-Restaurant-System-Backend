@@ -21,6 +21,10 @@ export class CustomerService {
             relations: ['orders'],
             order: { id: 'ASC' },
         });
+        if (!entities || entities.length === 0) {
+            throw new HttpException('No customers found', HttpStatus.NOT_FOUND);
+        }
+        console.log(entities);
         return this.mapper.mapArray(entities, CustomerEntity, CustomerResponseDto);
     }
 
@@ -48,23 +52,26 @@ export class CustomerService {
         return this.mapper.map(savedEntity, CustomerEntity, CustomerResponseDto);
     }
 
-    async updateCustomer(id: IdParamDto, updateDto: CreateCustomerDto): Promise<CustomerResponseDto> {
+    async updateCustomer(params: IdParamDto, updateDto: CreateCustomerDto): Promise<CustomerResponseDto> {
         const entity = await this.customerRepository.findOne({
-            where: { id: id.Id },
+            where: { id: params.Id },
         });
         if (!entity) {
-            throw new HttpException(`Customer with ID ${id.Id} not found`, HttpStatus.NOT_FOUND);
+            throw new HttpException(`Customer with ID ${params.Id} not found`, HttpStatus.NOT_FOUND);
         }
         const existingCustomer = await this.customerRepository.findOne({
-            where: { email: updateDto.email, id: Not(id.Id) },
+            where: { email: updateDto.email, id: Not(params.Id) },
         });
         if (existingCustomer) {
             throw new HttpException('Customer with this email already exists', HttpStatus.CONFLICT);
         }
         const updatedEntity = this.mapper.map(updateDto, CreateCustomerDto, CustomerEntity);
-        updatedEntity.id = id.Id;
-        const savedEntity = await this.customerRepository.save(updatedEntity);
-        return this.mapper.map(savedEntity, CustomerEntity, CustomerResponseDto);
+        updatedEntity.id = params.Id;
+        await this.customerRepository.update(updatedEntity.id, updatedEntity);
+        const customerResponse = await this.customerRepository.findOne({
+            where: { email: updateDto.email, id: Not(params.Id) },
+        });
+        return this.mapper.map(customerResponse, CustomerEntity, CustomerResponseDto);
     }
 
     async deleteCustomer(data: IdParamDto): Promise<void> {
@@ -74,6 +81,6 @@ export class CustomerService {
         if (!entity) {
             throw new HttpException(`Customer with ID ${data.Id} not found`, HttpStatus.NOT_FOUND);
         }
-        await this.customerRepository.remove(entity);
+        await this.customerRepository.softDelete(entity.id);
     }
 }

@@ -16,22 +16,22 @@ export class OrderItemEntity {
     menuItem: MenuItemEntity;
 
     @AutoMap()
-    @Column()
+    @Column({ default: 0 })
     quantity: number;
 
     @AutoMap()
     @Column({ type: "decimal", precision: 10, scale: 2 })
     priceAtOrder: number;
 
-    // @Column({ default: true })
-    // isActive: boolean;
+    @Column({ default: true })
+    isActive: boolean;
 
-    // @CreateDateColumn()
-    // createdAt: Date;
+    @CreateDateColumn()
+    createdAt: Date;
 
-    // @UpdateDateColumn()
-    // updatedAt: Date;
+    @UpdateDateColumn()
+    updatedAt: Date;
 
-    // @DeleteDateColumn()
-    // deletedAt: Date | null;
+    @DeleteDateColumn()
+    deletedAt: Date | null;
 }

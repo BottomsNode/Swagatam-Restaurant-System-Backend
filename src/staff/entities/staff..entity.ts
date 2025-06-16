@@ -23,15 +23,15 @@ export class StaffEntity {
     @OneToMany(() => OrderEntity, (order) => order.staff)
     orders: OrderEntity[];
 
-    // @Column({ default: true })
-    // isActive: boolean;
+    @Column({ default: true })
+    isActive: boolean;
 
-    // @CreateDateColumn()
-    // createdAt: Date;
+    @CreateDateColumn()
+    createdAt: Date;
 
-    // @UpdateDateColumn()
-    // updatedAt: Date;
+    @UpdateDateColumn()
+    updatedAt: Date;
 
-    // @DeleteDateColumn()
-    // deletedAt: Date | null;
+    @DeleteDateColumn()
+    deletedAt: Date | null;
 }

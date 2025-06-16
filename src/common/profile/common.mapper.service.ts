@@ -53,9 +53,9 @@ export class CommonMapper extends AutomapperProfile {
             );
 
             // Customer Mappings
-            createMap(mapper, CustomerEntity, CustomerDto);
-            createMap(mapper, CustomerDto, CustomerEntity);
             createMap(mapper, CreateCustomerDto, CustomerEntity);
+            createMap(mapper, CustomerDto, CustomerEntity);
+            createMap(mapper, CustomerEntity, CustomerDto);
             createMap(
                 mapper,
                 CustomerEntity,
@@ -95,10 +95,7 @@ export class CommonMapper extends AutomapperProfile {
             // Order Mappings
             createMap(mapper, OrderEntity, OrderDto);
             createMap(mapper, OrderDto, OrderEntity);
-            createMap(
-                mapper,
-                CreateOrderDto,
-                OrderEntity,
+            createMap(mapper,CreateOrderDto,OrderEntity,
                 forMember(
                     (dest) => dest.customer,
                     mapFrom((src) => ({ id: src.customerId } as CustomerEntity)),

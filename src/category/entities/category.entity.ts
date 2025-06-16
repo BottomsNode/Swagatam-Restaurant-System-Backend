@@ -16,19 +16,19 @@ export class CategoryEntity {
     @OneToMany(()=> MenuItemEntity, (menuItem)=> menuItem.category)
     menuItems: MenuItemEntity[];
 
-    // @AutoMap()
-    // @Column({ default: true })
-    // isActive: boolean;
+    @AutoMap()
+    @Column({ default: true })
+    isActive: boolean;
 
-    // @AutoMap()
-    // @CreateDateColumn()
-    // createdAt: Date;
+    @AutoMap()
+    @CreateDateColumn()
+    createdAt: Date;
 
-    // @AutoMap()
-    // @UpdateDateColumn()
-    // updatedAt: Date;
+    @AutoMap()
+    @UpdateDateColumn()
+    updatedAt: Date;
 
-    // @AutoMap()
-    // @DeleteDateColumn()
-    // deletedAt: Date | null;
+    @AutoMap()
+    @DeleteDateColumn()
+    deletedAt: Date | null;
 }
