@@ -1,11 +1,11 @@
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { Repository, Not } from 'typeorm';
 import { TableResponseDto } from './dto/table.res.dto';
-import { TableEntity } from './entities/table.entity';
+import { TableEntity, TableStatus } from './entities/table.entity';
 import { CreateTableDto } from './dto/table.create.dto';
 
 @Injectable()
@@ -17,6 +17,7 @@ export class TableService {
 
     async getAllTable(): Promise<TableResponseDto[]> {
         const entities = await this.tableRepository.find({
+            where: { status: TableStatus.AVAILABLE },
             relations: ['orders'],
             order: { id: 'ASC' },
         });
@@ -28,13 +29,15 @@ export class TableService {
 
     async getTable(data: IdParamDto): Promise<TableResponseDto> {
         const entity = await this.tableRepository.findOne({
-            where: { id: data.Id },
+            where: { id: data.Id, status: TableStatus.AVAILABLE },
             relations: ['orders'],
             order: { id: 'ASC' },
         });
+
         if (!entity) {
-            throw new HttpException(`Table with ID ${data.Id} not found`, HttpStatus.NOT_FOUND);
+            throw new NotFoundException(`Table with ID ${data.Id} and status AVAILABLE not found`);
         }
+
         return this.mapper.map(entity, TableEntity, TableResponseDto);
     }
 
