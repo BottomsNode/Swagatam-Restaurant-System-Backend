@@ -52,8 +52,8 @@ export class OrderService {
     async createOrder(createDto: CreateOrderDto): Promise<OrderResponseDto> {
         return await this.orderRepository.manager.transaction(async (manager) => {
             try {
-                // Create order entity using AutoMapper
-                const entity = this.createOrderEntity(createDto);
+                // Create order entity using AutoMapper and validate table
+                const entity = await this.createOrderEntity(createDto, manager);
 
                 // Map order items and set order relation
                 entity.items = this.mapOrderItems(createDto, entity);
@@ -65,8 +65,8 @@ export class OrderService {
                 const savedEntity = await manager.save(OrderEntity, entity);
                 this.logger.log(`Order saved: ${savedEntity.id}`);
 
-                // Schedule status update
-                this.scheduleStatusUpdate(savedEntity.id, manager);
+                // Schedule status update for order and table
+                this.scheduleStatusUpdate(savedEntity.id, createDto.tableId, manager);
 
                 // Map to response DTO
                 return this.mapper.map(savedEntity, OrderEntity, OrderResponseDto);
@@ -111,15 +111,28 @@ export class OrderService {
 
 
     /**
-     * Creates an OrderEntity from CreateOrderDto using AutoMapper
-     */
-    private createOrderEntity(createDto: CreateOrderDto): OrderEntity {
+      * Creates an OrderEntity from CreateOrderDto using AutoMapper
+      */
+    private async createOrderEntity(createDto: CreateOrderDto, manager: EntityManager): Promise<OrderEntity> {
         const entity = this.mapper.map(createDto, CreateOrderDto, OrderEntity);
         entity.orderTime = new Date();
         entity.status = OrderStatus.IN_PROCESS;
         entity.totalAmount = createDto.items.reduce((total, item) => {
             return total + (item.priceAtOrder * item.quantity);
         }, 0);
+
+        // Validate and set table
+        const table = await manager.findOne(TableEntity, { where: { id: createDto.tableId } });
+        if (!table) {
+            throw new NotFoundException(`Table with ID ${createDto.tableId} not found.`);
+        }
+        if (table.status === TableStatus.OCCUPIED) {
+            throw new BadRequestException(`Table ${table.id} is currently occupied.`);
+        }
+        table.status = TableStatus.OCCUPIED;
+        await manager.save(TableEntity, table);
+        entity.table = table;
+
         return entity;
     }
 
@@ -162,12 +175,21 @@ export class OrderService {
     }
 
     /**
-     * Schedules order status update to COMPLETED after 1 minute
+     * Schedules order and table status update after 1 minute
      */
-    private scheduleStatusUpdate(orderId: number, manager: EntityManager): void {
+    private scheduleStatusUpdate(orderId: number, tableId: number, manager: EntityManager): void {
         setTimeout(async () => {
             try {
                 await manager.transaction(async (innerManager) => {
+                    const freshTable = await innerManager.findOne(TableEntity, { where: { id: tableId } });
+                    if (freshTable) {
+                        freshTable.status = TableStatus.AVAILABLE;
+                        await innerManager.save(TableEntity, freshTable);
+                        this.logger.log(`Table ${freshTable.id} status reset to AVAILABLE`);
+                    } else {
+                        this.logger.error(`Table ${tableId} not found during reset`);
+                    }
+
                     const freshOrder = await innerManager.findOne(OrderEntity, {
                         where: { id: orderId },
                         relations: ['items'],

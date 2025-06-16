@@ -13,7 +13,7 @@ export class CreateOrderDto {
     @AutoMap()
     @IsNotEmpty()
     @ApiProperty()
-    tableId?: number;
+    tableId: number;
 
     @AutoMap()
     @IsNotEmpty()
