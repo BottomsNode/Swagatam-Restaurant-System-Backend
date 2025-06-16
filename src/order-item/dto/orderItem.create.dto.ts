@@ -5,9 +5,6 @@ import { IsInt } from "class-validator";
 
 export class CreateOrderItemDto {
 
-    @IsInt()
-    id: number;
-
     @AutoMap()
     @IsNotEmpty()
     @ApiProperty()

@@ -12,6 +12,7 @@ import { MenuItemEntity } from 'src/menu-item/entities/menu_item.entity';
 import { CustomerEntity } from 'src/customer/entities/customer.entity';
 import { OrderItemEntity } from 'src/order-item/entities/order_item.entity';
 import { StaffEntity } from 'src/staff/entities/staff..entity';
+import { CreateOrderItemDto } from 'src/order-item/dto/orderItem.create.dto';
 
 @Injectable()
 export class OrderService {
@@ -51,31 +52,25 @@ export class OrderService {
     async createOrder(createDto: CreateOrderDto): Promise<OrderResponseDto> {
         return await this.orderRepository.manager.transaction(async (manager) => {
             try {
-                // Create order entity
+                // Create order entity using AutoMapper
                 const entity = this.createOrderEntity(createDto);
-                console.log("Entity : ", entity);
 
                 // Map order items and set order relation
                 entity.items = this.mapOrderItems(createDto, entity);
-                console.log("Order items : ", entity.items);
 
                 // Validate and update menu item quantities
                 await this.validateAndUpdateMenuItems(entity.items, manager);
 
                 // Save the order (cascades to order items)
                 const savedEntity = await manager.save(OrderEntity, entity);
-                console.log("Saved Order", savedEntity);
                 this.logger.log(`Order saved: ${savedEntity.id}`);
 
                 // Schedule status update
                 this.scheduleStatusUpdate(savedEntity.id, manager);
 
                 // Map to response DTO
-                const response = this.mapper.map(savedEntity, OrderEntity, OrderResponseDto);
-                console.log("Response : " ,response);
-                return response;
-            } 
-            catch (error) {
+                return this.mapper.map(savedEntity, OrderEntity, OrderResponseDto);
+            } catch (error) {
                 this.logger.error(`Error creating order: ${error.message}`);
                 throw error instanceof BadRequestException || error instanceof NotFoundException
                     ? error
@@ -115,19 +110,16 @@ export class OrderService {
     }
 
 
-
     /**
-     * Creates an OrderEntity from CreateOrderDto
+     * Creates an OrderEntity from CreateOrderDto using AutoMapper
      */
     private createOrderEntity(createDto: CreateOrderDto): OrderEntity {
-        const entity = new OrderEntity();
+        const entity = this.mapper.map(createDto, CreateOrderDto, OrderEntity);
         entity.orderTime = new Date();
         entity.status = OrderStatus.IN_PROCESS;
         entity.totalAmount = createDto.items.reduce((total, item) => {
             return total + (item.priceAtOrder * item.quantity);
         }, 0);
-        entity.customer = { id: createDto.customerId } as CustomerEntity;
-        entity.staff = { id: createDto.staffId } as StaffEntity;
         return entity;
     }
 
@@ -135,14 +127,14 @@ export class OrderService {
      * Maps order items from DTO and sets order relation
      */
     private mapOrderItems(createDto: CreateOrderDto, order: OrderEntity): OrderItemEntity[] {
-        return createDto.items.map(itemDto => {
-            const orderItem = new OrderItemEntity();
-            orderItem.menuItem = { id: itemDto.id } as MenuItemEntity;
-            orderItem.quantity = itemDto.quantity;
-            orderItem.priceAtOrder = itemDto.priceAtOrder;
-            orderItem.order = order; // Explicitly set order relation
-            return orderItem;
+        const items = createDto.items.map(itemDto =>
+            this.mapper.map(itemDto, CreateOrderItemDto, OrderItemEntity),
+        );
+        // Explicitly set order relation to ensure orderId is passed
+        items.forEach(item => {
+            item.order = order;
         });
+        return items;
     }
 
     /**

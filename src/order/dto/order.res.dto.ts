@@ -39,5 +39,5 @@ export class OrderResponseDto extends BaseResponseDto {
     @AutoMap()
     @ApiProperty()
     items?: OrderItemResponseDto[];
-    // items: { id: number; menuItem: { id: number }; quantity: number; priceAtOrder: number }[];
+    // items: { id: number ;menuItem: { id: number; name: string }; quantity: number; priceAtOrder: number}[];
 }

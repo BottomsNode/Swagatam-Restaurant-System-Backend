@@ -95,14 +95,13 @@ export class CommonMapper extends AutomapperProfile {
             // Order Mappings
             createMap(mapper, OrderEntity, OrderDto);
             createMap(mapper, OrderDto, OrderEntity);
-            createMap(mapper,CreateOrderDto,OrderEntity,
+            createMap(
+                mapper,
+                CreateOrderDto,
+                OrderEntity,
                 forMember(
                     (dest) => dest.customer,
                     mapFrom((src) => ({ id: src.customerId } as CustomerEntity)),
-                ),
-                forMember(
-                    (dest) => dest.table,
-                    mapFrom((src) => ({ id: src.tableId } as TableEntity)),
                 ),
                 forMember(
                     (dest) => dest.staff,
@@ -120,10 +119,6 @@ export class CommonMapper extends AutomapperProfile {
                 forMember(
                     (dest) => dest.customer,
                     mapFrom((src) => mapper.map(src.customer, CustomerEntity, CustomerDto)),
-                ),
-                forMember(
-                    (dest) => dest.table,
-                    mapFrom((src) => mapper.map(src.table, TableEntity, TableDto)),
                 ),
                 forMember(
                     (dest) => dest.staff,
