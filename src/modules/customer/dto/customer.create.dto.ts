@@ -1,7 +1,6 @@
 
 import { AutoMap } from "@automapper/classes";
 import { IsEmail, IsNotEmpty, IsPhoneNumber, ValidationArguments } from "@nestjs/class-validator";
-import { BadRequestException, InternalServerErrorException } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsString, MinLength } from "class-validator";
 
@@ -11,17 +10,24 @@ export class CreateCustomerDto {
     @IsNotEmpty()
     name: string;
 
-    @ApiProperty()
+    @ApiProperty({
+        description: "Customer's email address",
+        example: "12345XXXXX"
+    })
     @AutoMap()
     @IsNotEmpty()
     phone: string;
 
-    @ApiProperty()
+    @ApiProperty({
+        description: 'Email address of the user',
+        example: 'abcd@gmail.com',
+    })
     @IsNotEmpty()
     @AutoMap()
     @IsEmail()
     email: string;
 
+    @ApiProperty()
     @IsString()
     @MinLength(6)
     password: string;

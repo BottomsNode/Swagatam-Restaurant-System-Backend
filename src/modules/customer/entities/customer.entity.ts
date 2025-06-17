@@ -17,8 +17,8 @@ export class CustomerEntity {
     phone: string
 
     @AutoMap()
-    @Column()
-    email: string
+    @Column({ unique: true })
+    email: string;
 
     @AutoMap()
     @Column()

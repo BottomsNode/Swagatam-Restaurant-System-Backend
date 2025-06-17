@@ -38,12 +38,6 @@ export class OrderItemService {
         return this.mapper.map(entity, OrderItemEntity, OrderItemResponseDto);
     }
 
-    // async createOrderItem(createDto: CreateOrderItemDto): Promise<OrderItemResponseDto> {
-    //     const entity = this.mapper.map(createDto, CreateOrderItemDto, OrderItemEntity);
-    //     const savedEntity = await this.orderItemRepository.save(entity);
-    //     return this.mapper.map(savedEntity, OrderItemEntity, OrderItemResponseDto);
-    // }
-
     async updateOrderItem(params: IdParamDto, updateDto: CreateOrderItemDto): Promise<OrderItemResponseDto> {
         const entity = await this.orderItemRepository.findOne({
             where: { id: params.Id },

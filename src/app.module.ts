@@ -22,6 +22,8 @@ import { AuthModule } from './modules/auth/auth.module';
   imports: [
     // For env Files
     ConfigModule.forRoot(),
+    // For Authentication
+    AuthModule,
     // For Database Connection
     TypeOrmModule.forRootAsync({
       useFactory: () => ({}),
@@ -44,7 +46,6 @@ import { AuthModule } from './modules/auth/auth.module';
     CategoryModule,
     TableModule,
     StaffModule,
-    AuthModule
   ],
   controllers: [AppController],
   providers: [

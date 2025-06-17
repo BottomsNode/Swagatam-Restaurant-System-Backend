@@ -4,7 +4,9 @@ import { MenuItemResponseDto } from './dto/menuItem.res.dto';
 import { MenuItemService } from './menu-item.service';
 import { CreateMenuItemDto } from './dto/menuItem.create.dto';
 import { CommonExceptionFilter } from 'src/common/error/exception.handler';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('menu-item')
 @UseFilters(CommonExceptionFilter)
 export class MenuItemController {

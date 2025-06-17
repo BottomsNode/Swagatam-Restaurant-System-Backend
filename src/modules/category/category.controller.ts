@@ -4,7 +4,9 @@ import { CreateCategoryDto } from './dto/category.create.dto';
 import { CategoryResponseDto } from './dto/category.res.dto';
 import { CommonExceptionFilter } from 'src/common/error/exception.handler';
 import { CategoryService } from './category.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('category')
 @UseFilters(CommonExceptionFilter)
 export class CategoryController {

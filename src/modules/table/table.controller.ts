@@ -1,11 +1,15 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
 import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { CommonExceptionFilter } from 'src/common/error/exception.handler';
 import { TableResponseDto } from './dto/table.res.dto';
 import { TableService } from './table.service';
 import { CreateTableDto } from './dto/table.create.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('table')
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
 @UseFilters(CommonExceptionFilter)
 export class TableController {
     constructor(private readonly tableService: TableService) { }

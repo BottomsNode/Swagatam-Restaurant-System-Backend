@@ -4,10 +4,12 @@ import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { CustomerResponseDto } from './dto/customer.res.dto';
 import { CreateCustomerDto } from './dto/customer.create.dto';
 import { CommonExceptionFilter } from 'src/common/error/exception.handler';
-import { AuthGuard } from '../auth/auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@ApiBearerAuth()
 @Controller('customer')
-@UseGuards(AuthGuard)
+@UseGuards(JwtAuthGuard)
 @UseFilters(CommonExceptionFilter)
 export class CustomerController {
 
@@ -19,7 +21,7 @@ export class CustomerController {
     // GET Route Comman
     private async executeRoute(
         operation: 'getAll' | 'getCustomer' | 'createCustomer' | 'updateCustomer' | 'deleteCustomer',
-        params?: IdParamDto , body?: CreateCustomerDto,
+        params?: IdParamDto , body?: CreateCustomerDto
     ) {
         switch (operation) {
             case 'getAll':
@@ -45,10 +47,10 @@ export class CustomerController {
         return this.executeRoute('getCustomer', params) as Promise<CustomerResponseDto>;
     }
 
-    @Post('/')
-    async createCustomer(@Body() createDto: CreateCustomerDto): Promise<CustomerResponseDto> {
-        return this.customerService.createCustomer(createDto);
-    }
+    // @Post('/')
+    // async createCustomer(@Body() createDto: CreateCustomerDto): Promise<CustomerResponseDto> {
+    //     return this.customerService.createCustomer(createDto);
+    // }
 
     @Put('/:Id')
     async updateCustomer(@Param() params: IdParamDto, @Body() updateDto: CreateCustomerDto): Promise<CustomerResponseDto> {

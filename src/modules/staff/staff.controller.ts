@@ -1,11 +1,15 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
 import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { CommonExceptionFilter } from 'src/common/error/exception.handler';
 import { StaffResponseDto } from './dto/staf.res.dto';
 import { StaffService } from './staff.service';
 import { CreateStaffDto } from './dto/staff.create.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('staff')
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
 @UseFilters(CommonExceptionFilter)
 export class StaffController {
     constructor(private readonly staffService: StaffService) { }

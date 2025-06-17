@@ -1,11 +1,15 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
 import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { CommonExceptionFilter } from 'src/common/error/exception.handler';
 import { OrderItemResponseDto } from './dto/orderItem.res.dto';
 import { OrderItemService } from './order-item.service';
 import { CreateOrderItemDto } from './dto/orderItem.create.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('order-item')
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
 @UseFilters(CommonExceptionFilter)
 export class OrderItemController {
     constructor(private readonly orderItemService: OrderItemService) { }

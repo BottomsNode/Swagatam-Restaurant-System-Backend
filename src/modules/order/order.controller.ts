@@ -1,11 +1,15 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
 import { CommonExceptionFilter } from 'src/common/error/exception.handler';
 import { OrderService } from './order.service';
 import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { OrderResponseDto } from './dto/order.res.dto';
 import { CreateOrderDto } from './dto/order.create.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('order')
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
 @UseFilters(CommonExceptionFilter)
 export class OrderController {
 
