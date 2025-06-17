@@ -24,7 +24,6 @@ export class CustomerService {
         if (!entities || entities.length === 0) {
             throw new HttpException('No customers found', HttpStatus.NOT_FOUND);
         }
-        console.log(entities);
         return this.mapper.mapArray(entities, CustomerEntity, CustomerResponseDto);
     }
 
@@ -39,18 +38,6 @@ export class CustomerService {
         }
         return this.mapper.map(entity, CustomerEntity, CustomerResponseDto);
     }
-
-    // async createCustomer(createDto: CreateCustomerDto): Promise<CustomerResponseDto> {
-    //     const existingCustomer = await this.customerRepository.findOne({
-    //         where: { email: createDto.email },
-    //     });
-    //     if (existingCustomer) {
-    //         throw new HttpException('Customer with this email already exists', HttpStatus.CONFLICT);
-    //     }
-    //     const entity = this.mapper.map(createDto, CreateCustomerDto, CustomerEntity);
-    //     const savedEntity = await this.customerRepository.save(entity);
-    //     return this.mapper.map(savedEntity, CustomerEntity, CustomerResponseDto);
-    // }
 
     async updateCustomer(params: IdParamDto, updateDto: CreateCustomerDto): Promise<CustomerResponseDto> {
         const entity = await this.customerRepository.findOne({

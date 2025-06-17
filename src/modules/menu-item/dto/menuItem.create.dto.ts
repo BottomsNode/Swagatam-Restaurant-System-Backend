@@ -1,11 +1,12 @@
 import { AutoMap } from "@automapper/classes";
-import { IsNotEmpty } from "@nestjs/class-validator";
+import { IsNotEmpty, Length } from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateMenuItemDto {
     @AutoMap()
     @ApiProperty()
     @IsNotEmpty()
+    @Length(3, 3, { message: 'Menu Item must be exactly 3 characters long' })
     name: string;
 
     @AutoMap()

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -17,6 +17,15 @@ import { OrderModule } from './modules/order/order.module';
 import { StaffModule } from './modules/staff/staff.module';
 import { TableModule } from './modules/table/table.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { AuthMiddleware } from './common/middlewares/middleware.service';
+import { LoggingMiddleware } from './common/middlewares/loggin.middleware.service';
+import { CustomerController } from './modules/customer/customer.controller';
+import { OrderController } from './modules/order/order.controller';
+import { OrderItemController } from './modules/order-item/order-item.controller';
+import { MenuItemController } from './modules/menu-item/menu-item.controller';
+import { CategoryController } from './modules/category/category.controller';
+import { TableController } from './modules/table/table.controller';
+import { StaffController } from './modules/staff/staff.controller';
 
 @Module({
   imports: [
@@ -54,6 +63,19 @@ import { AuthModule } from './modules/auth/auth.module';
     CommonMapper,
     CommonExceptionFilter
   ],
-  exports : [CommonMapper],
+  exports: [CommonMapper],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes(CustomerController),
+    consumer.apply(AuthMiddleware).forRoutes(OrderController),
+    consumer.apply(AuthMiddleware).forRoutes(OrderItemController),
+    consumer.apply(AuthMiddleware).forRoutes(MenuItemController),
+    consumer.apply(AuthMiddleware).forRoutes(CategoryController),
+    consumer.apply(AuthMiddleware).forRoutes(TableController),
+    consumer.apply(AuthMiddleware).forRoutes(StaffController),
+    consumer.apply(LoggingMiddleware).forRoutes('*');
+    // OR for a specific route:
+    // .forRoutes({ path: 'your-route', method: RequestMethod.GET });
+  }
+}

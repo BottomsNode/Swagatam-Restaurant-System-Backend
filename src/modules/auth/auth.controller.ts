@@ -4,22 +4,19 @@ import { CustomerResponseDto } from '../customer/dto/customer.res.dto';
 import { LoginCustomerDto } from './dto/login.dto';
 import { AuthService } from './auth.service';
 import { CreateCustomerDto } from '../customer/dto/customer.create.dto';
-import { LocalAuthGuard } from './guards/local-auth.guard';
-
 @ApiTags(`Customer Auth`)
 @Controller('auth')
 export class AuthController {
 
     constructor(private readonly authService: AuthService) { }
 
-    @Post('register')
+    @Post('register/customer')
     async register(@Body() createDto: CreateCustomerDto): Promise<CustomerResponseDto> {
-        return this.authService.register(createDto);
+        return this.authService.registerCustomer(createDto);
     }
 
-    @UseGuards(LocalAuthGuard)
-    @Post('login')
+    @Post('login/customer')
     async login(@Body() loginDto: LoginCustomerDto): Promise<{ access_token: string }> {
-        return this.authService.login(loginDto);
+        return this.authService.loginCustomer(loginDto);
     }
 }

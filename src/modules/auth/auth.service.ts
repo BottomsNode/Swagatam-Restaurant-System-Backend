@@ -20,7 +20,7 @@ export class AuthService {
         private readonly jwtService: JwtService,
     ) { }
 
-    async register(createDto: CreateCustomerDto): Promise<CustomerResponseDto> {
+    async registerCustomer(createDto: CreateCustomerDto): Promise<CustomerResponseDto> {
         const existingCustomer = await this.customerRepository.findOne({
             where: { email: createDto.email },
         });
@@ -35,7 +35,7 @@ export class AuthService {
         return this.mapper.map(savedEntity, CustomerEntity, CustomerResponseDto);
     }
 
-    async login(loginDto: LoginCustomerDto): Promise<{ access_token: string }> {
+    async loginCustomer(loginDto: LoginCustomerDto): Promise<{ access_token: string }> {
         const customer = await this.customerRepository.findOne({
             where: { email: loginDto.email },
         });

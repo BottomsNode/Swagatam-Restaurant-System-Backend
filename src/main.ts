@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ConfigService } from '@nestjs/config';
 import { CommonExceptionFilter } from './common/error/exception.handler';
 import { ValidationPipe } from '@nestjs/common';
+import { LoggingMiddleware } from './common/middlewares/loggin.middleware.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +21,9 @@ async function bootstrap() {
 
   // For Exception
   app.useGlobalFilters(new CommonExceptionFilter());
+
+  // Apply middleware globally
+  // app.use(new LoggingMiddleware().use);
 
 
   // Swagger Configuration

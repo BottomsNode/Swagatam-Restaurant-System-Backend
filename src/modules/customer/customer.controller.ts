@@ -8,9 +8,9 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiBearerAuth()
-@Controller('customer')
 @UseGuards(JwtAuthGuard)
 @UseFilters(CommonExceptionFilter)
+@Controller('customer')
 export class CustomerController {
 
     constructor(
