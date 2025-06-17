@@ -29,6 +29,8 @@ import { StaffController } from './modules/staff/staff.controller';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptors } from './common/interceptors/logging.interceptor';
+import { ConsoleModule } from 'nestjs-console';
+import { SeederModule } from './seeders/seeder.module';
 
 @Module({
   imports: [
@@ -39,17 +41,12 @@ import { LoggingInterceptors } from './common/interceptors/logging.interceptor';
     // For Authentication
     AuthModule,
 
+    ConsoleModule,
+    SeederModule,
+
 
     // For Database Connection
-    TypeOrmModule.forRootAsync({
-      useFactory: () => ({}),
-      dataSourceFactory: async () => {
-        if (!AppDataSource.isInitialized) {
-          await AppDataSource.initialize();
-        }
-        return AppDataSource;
-      },
-    }),
+    TypeOrmModule.forRoot(AppDataSource.options),
 
 
     // For Automapper
@@ -67,6 +64,7 @@ import { LoggingInterceptors } from './common/interceptors/logging.interceptor';
         },
       ],
     }),
+
 
 
     // Other Modules

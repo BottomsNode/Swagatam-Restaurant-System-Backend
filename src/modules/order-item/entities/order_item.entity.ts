@@ -1,6 +1,6 @@
 import { AutoMap } from "@automapper/classes";
-import { MenuItemEntity } from "src/modules/menu-item/entities/menu_item.entity";
-import { OrderEntity } from "src/modules/order/entities/order.entity";
+import { MenuItemEntity } from "../../../modules/menu-item/entities/menu_item.entity";
+import { OrderEntity } from "../../../modules/order/entities/order.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()

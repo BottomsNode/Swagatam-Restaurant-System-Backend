@@ -1,5 +1,5 @@
 import { AutoMap } from "@automapper/classes";
-import { MenuItemEntity } from "src/modules/menu-item/entities/menu_item.entity";
+import { MenuItemEntity } from "../../../modules/menu-item/entities/menu_item.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()

@@ -1,8 +1,8 @@
 import { AutoMap } from "@automapper/classes";
-import { CustomerEntity } from "src/modules/customer/entities/customer.entity";
-import { OrderItemEntity } from "src/modules/order-item/entities/order_item.entity";
-import { StaffEntity } from "src/modules/staff/entities/staff..entity";
-import { TableEntity } from "src/modules/table/entities/table.entity";
+import { CustomerEntity } from "../../../modules/customer/entities/customer.entity";
+import { OrderItemEntity } from "../../../modules/order-item/entities/order_item.entity";
+import { StaffEntity } from "../../../modules/staff/entities/staff..entity";
+import { TableEntity } from "../../../modules/table/entities/table.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 export enum OrderStatus {

@@ -1,5 +1,5 @@
 import { AutoMap } from "@automapper/classes";
-import { OrderEntity } from "src/modules/order/entities/order.entity";
+import { OrderEntity } from "../../../modules/order/entities/order.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
