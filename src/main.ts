@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ConfigService } from '@nestjs/config';
 import { CommonExceptionFilter } from './common/error/exception.handler';
 import { ValidationPipe } from '@nestjs/common';
+import { AuthGuard } from './modules/auth/auth.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,6 +15,10 @@ async function bootstrap() {
   
   // For Exception
   app.useGlobalFilters(new CommonExceptionFilter());
+
+  // For Authentication
+  app.useGlobalGuards(new AuthGuard());
+
 
   // Swagger Configuration
   const config = new DocumentBuilder()

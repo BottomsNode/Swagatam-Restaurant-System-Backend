@@ -1,13 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CustomerModule } from './customer/customer.module';
-import { OrderModule } from './order/order.module';
-import { OrderItemModule } from './order-item/order-item.module';
-import { MenuItemModule } from './menu-item/menu-item.module';
-import { CategoryModule } from './category/category.module';
-import { TableModule } from './table/table.module';
-import { StaffModule } from './staff/staff.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseService } from './config/connection.msg';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -16,7 +9,14 @@ import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { CommonMapper } from './common/profile/common.mapper.service';
 import { CommonExceptionFilter } from './common/error/exception.handler';
-import { CustomerService } from './customer/customer.service';
+import { CategoryModule } from './modules/category/category.module';
+import { CustomerModule } from './modules/customer/customer.module';
+import { MenuItemModule } from './modules/menu-item/menu-item.module';
+import { OrderItemModule } from './modules/order-item/order-item.module';
+import { OrderModule } from './modules/order/order.module';
+import { StaffModule } from './modules/staff/staff.module';
+import { TableModule } from './modules/table/table.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -43,7 +43,8 @@ import { CustomerService } from './customer/customer.service';
     MenuItemModule,
     CategoryModule,
     TableModule,
-    StaffModule
+    StaffModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [
