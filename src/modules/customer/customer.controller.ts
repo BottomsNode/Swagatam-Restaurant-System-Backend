@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { CustomerResponseDto } from './dto/customer.res.dto';
@@ -6,9 +6,12 @@ import { CreateCustomerDto } from './dto/customer.create.dto';
 import { CommonExceptionFilter } from 'src/common/error/exception.handler';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { LoggingInterceptors } from 'src/common/interceptors/logging.interceptor';
+import { TransformInterceptor } from 'src/common/interceptors/transform.interceptor';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(LoggingInterceptors,TransformInterceptor)
 @UseFilters(CommonExceptionFilter)
 @Controller('customer')
 export class CustomerController {

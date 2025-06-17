@@ -35,7 +35,7 @@ export class AuthService {
         return this.mapper.map(savedEntity, CustomerEntity, CustomerResponseDto);
     }
 
-    async loginCustomer(loginDto: LoginCustomerDto): Promise<{ access_token: string }> {
+    async loginCustomer(loginDto: LoginCustomerDto): Promise<{ msg: string, access_token: string }> {
         const customer = await this.customerRepository.findOne({
             where: { email: loginDto.email },
         });
@@ -49,7 +49,9 @@ export class AuthService {
         }
 
         const payload = { sub: customer.id, email: customer.email };
+        // return token and message
         return {
+            msg: 'Login successful',
             access_token: this.jwtService.sign(payload),
         };
     }

@@ -26,13 +26,20 @@ import { MenuItemController } from './modules/menu-item/menu-item.controller';
 import { CategoryController } from './modules/category/category.controller';
 import { TableController } from './modules/table/table.controller';
 import { StaffController } from './modules/staff/staff.controller';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { LoggingInterceptors } from './common/interceptors/logging.interceptor';
 
 @Module({
   imports: [
     // For env Files
     ConfigModule.forRoot(),
+
+
     // For Authentication
     AuthModule,
+
+
     // For Database Connection
     TypeOrmModule.forRootAsync({
       useFactory: () => ({}),
@@ -43,10 +50,25 @@ import { StaffController } from './modules/staff/staff.controller';
         return AppDataSource;
       },
     }),
+
+
     // For Automapper
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
+
+
+    // For Rate Limiting
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 10,
+        },
+      ],
+    }),
+
+
     // Other Modules
     CustomerModule,
     OrderModule,
@@ -56,25 +78,36 @@ import { StaffController } from './modules/staff/staff.controller';
     TableModule,
     StaffModule,
   ],
+
   controllers: [AppController],
+  
   providers: [
     AppService,
     DatabaseService,
     CommonMapper,
-    CommonExceptionFilter
+    CommonExceptionFilter,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptors
+  
+    },
   ],
   exports: [CommonMapper],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthMiddleware).forRoutes(CustomerController),
-    consumer.apply(AuthMiddleware).forRoutes(OrderController),
-    consumer.apply(AuthMiddleware).forRoutes(OrderItemController),
-    consumer.apply(AuthMiddleware).forRoutes(MenuItemController),
-    consumer.apply(AuthMiddleware).forRoutes(CategoryController),
-    consumer.apply(AuthMiddleware).forRoutes(TableController),
-    consumer.apply(AuthMiddleware).forRoutes(StaffController),
-    consumer.apply(LoggingMiddleware).forRoutes('*');
+      consumer.apply(AuthMiddleware).forRoutes(OrderController),
+      consumer.apply(AuthMiddleware).forRoutes(OrderItemController),
+      consumer.apply(AuthMiddleware).forRoutes(MenuItemController),
+      consumer.apply(AuthMiddleware).forRoutes(CategoryController),
+      consumer.apply(AuthMiddleware).forRoutes(TableController),
+      consumer.apply(AuthMiddleware).forRoutes(StaffController),
+      consumer.apply(LoggingMiddleware).forRoutes('*');
     // OR for a specific route:
     // .forRoutes({ path: 'your-route', method: RequestMethod.GET });
   }
