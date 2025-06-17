@@ -34,9 +34,9 @@ export class DatabaseSeeder {
             // await this.clearTables();
             const categories = await this.seedCategories();
             await this.seedMenuItems(categories);
-            // await this.seedTables();
-            // await this.seedCustomers();
-            // await this.seedStaff();
+            await this.seedTables();
+            await this.seedCustomers();
+            await this.seedStaff();
             this.logger.log('Database seeding completed successfully');
         } catch (error) {
             this.logger.error(`Seeding failed: ${error.message}`);
