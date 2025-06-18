@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config({ path: './.env' });
 import { DataSource } from 'typeorm';
-console.log(process.env.DB_HOST);
+
 export const AppDataSource = new DataSource({
     type: 'postgres',
     host: process.env.DB_HOST,

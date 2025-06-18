@@ -1,14 +1,18 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
 import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { CreateCategoryDto } from './dto/category.create.dto';
 import { CategoryResponseDto } from './dto/category.res.dto';
 import { CommonExceptionFilter } from 'src/common/error/exception.handler';
 import { CategoryService } from './category.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
+import { USER_ROLES } from '../auth/dto/all.roles.dto';
+import { Roles } from '../auth/decorators/sys.role.decorators';
 
 @ApiBearerAuth()
-@Controller('category')
+@UseGuards(SystemRoleGuard)
 @UseFilters(CommonExceptionFilter)
+@Controller('category')
 export class CategoryController {
     constructor(private readonly categoryService: CategoryService) { }
 
@@ -31,25 +35,33 @@ export class CategoryController {
     }
 
     @Get('/')
+    @Roles(USER_ROLES.ADMIN)
+    @Roles(USER_ROLES.CUSTOMER)
     async getAllCategory(): Promise<CategoryResponseDto[]> {
         return this.executeRoute('getAll') as Promise<CategoryResponseDto[]>;
     }
 
     @Get('/:Id')
+    @Roles(USER_ROLES.ADMIN)
+    @Roles(USER_ROLES.CUSTOMER)
     async getCategory(@Param() params: IdParamDto): Promise<CategoryResponseDto> {
         return this.executeRoute('getCategory', params) as Promise<CategoryResponseDto>;
     }
 
     @Post('/')
+    @Roles(USER_ROLES.ADMIN)
+    @Roles(USER_ROLES.CUSTOMER)
     async createCategory(@Body() createDto: CreateCategoryDto): Promise<CategoryResponseDto> {
         return this.categoryService.createCategory(createDto);
     }
 
     @Put('/:Id')
+    @Roles(USER_ROLES.ADMIN)
     async updateCategory(@Param() params: IdParamDto, @Body() updateDto: CreateCategoryDto): Promise<CategoryResponseDto> {
         return this.executeRoute('updateCategory', params, updateDto) as Promise<CategoryResponseDto>;
     }
 
+    @Roles(USER_ROLES.ADMIN)
     @Delete('/:Id')
     async deleteCategory(@Param() params: IdParamDto): Promise<void> {
         return this.executeRoute('deleteCategory', params) as Promise<void>;

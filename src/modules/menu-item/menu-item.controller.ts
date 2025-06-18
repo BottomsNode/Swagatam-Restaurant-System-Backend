@@ -1,19 +1,23 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
 import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { MenuItemResponseDto } from './dto/menuItem.res.dto';
 import { MenuItemService } from './menu-item.service';
 import { CreateMenuItemDto } from './dto/menuItem.create.dto';
 import { CommonExceptionFilter } from 'src/common/error/exception.handler';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
+import { Roles } from '../auth/decorators/sys.role.decorators';
+import { USER_ROLES } from '../auth/dto/all.roles.dto';
 
 @ApiBearerAuth()
-@Controller('menu-item')
+@UseGuards(SystemRoleGuard)
 @UseFilters(CommonExceptionFilter)
+@Controller('menu-item')
 export class MenuItemController {
     constructor(private readonly menuItemService: MenuItemService) { }
 
     private async executeRoute(
-        operation: 'getAll' | 'getMenuItem' | 'createMenuItem' | 'updateMenuItem' | 'deleteMenuItem',
+        operation: 'getAll' | 'getMenuItem' | 'updateMenuItem' | 'deleteMenuItem',
         params?: IdParamDto | CreateMenuItemDto, body?: CreateMenuItemDto
     ) {
         switch (operation) {
@@ -31,26 +35,33 @@ export class MenuItemController {
     }
 
     @Get('/')
+    @Roles(USER_ROLES.ADMIN)
+    @Roles(USER_ROLES.CUSTOMER)
     async getAllMenuItem(): Promise<MenuItemResponseDto[]> {
         return this.executeRoute('getAll') as Promise<MenuItemResponseDto[]>;
     }
 
     @Get('/:Id')
+    @Roles(USER_ROLES.ADMIN)
+    @Roles(USER_ROLES.CUSTOMER)
     async getMenuItem(@Param() params: IdParamDto): Promise<MenuItemResponseDto> {
         return this.executeRoute('getMenuItem', params) as Promise<MenuItemResponseDto>;
     }
 
     @Post('/')
+    @Roles(USER_ROLES.ADMIN)
     async createMenuItem(@Body() createDto: CreateMenuItemDto): Promise<MenuItemResponseDto> {
         return this.menuItemService.createMenuItem(createDto);
     }
 
     @Put('/:Id')
+    @Roles(USER_ROLES.ADMIN)
     async updateMenuItem(@Param() params: IdParamDto, @Body() updateDto: CreateMenuItemDto): Promise<MenuItemResponseDto> {
         return this.executeRoute('updateMenuItem', params, updateDto) as Promise<MenuItemResponseDto>;
     }
 
     @Delete('/:Id')
+    @Roles(USER_ROLES.ADMIN)
     async deleteMenuItem(@Param() params: IdParamDto): Promise<void> {
         return this.executeRoute('deleteMenuItem', params) as Promise<void>;
     }

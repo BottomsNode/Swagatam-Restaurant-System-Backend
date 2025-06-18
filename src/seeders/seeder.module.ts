@@ -8,7 +8,6 @@ import { TableEntity } from '../modules/table/entities/table.entity';
 import { DatabaseSeeder } from './seeders.service';
 import { AppDataSource } from '../config/typeorm.config';
 import { ConfigModule } from '@nestjs/config';
-console.log("HGi");
 @Module({
     imports: [
         ConfigModule.forRoot(),

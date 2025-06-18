@@ -1,6 +1,7 @@
 import { AutoMap } from "@automapper/classes";
 import { OrderEntity } from "../../../modules/order/entities/order.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { USER_ROLES } from "src/modules/auth/dto/all.roles.dto";
 
 @Entity()
 export class CustomerEntity {
@@ -27,6 +28,10 @@ export class CustomerEntity {
     @AutoMap()
     @OneToMany(() => OrderEntity, (order) => order.customer)
     orders: OrderEntity[]
+
+    @AutoMap()
+    @Column({ type: 'enum', enum: USER_ROLES, default: USER_ROLES.CUSTOMER })
+    role: USER_ROLES;
 
     @AutoMap()
     @Column({ default: true })

@@ -6,11 +6,15 @@ import { OrderItemService } from './order-item.service';
 import { CreateOrderItemDto } from './dto/orderItem.create.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
+import { Roles } from '../auth/decorators/sys.role.decorators';
+import { USER_ROLES } from '../auth/dto/all.roles.dto';
 
-@Controller('order-item')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
+@UseGuards(SystemRoleGuard)
 @UseFilters(CommonExceptionFilter)
+@Controller('order-item')
 export class OrderItemController {
     constructor(private readonly orderItemService: OrderItemService) { }
 
@@ -33,27 +37,29 @@ export class OrderItemController {
     }
 
     @Get('/')
+    @Roles(USER_ROLES.ADMIN)
+    @Roles(USER_ROLES.CUSTOMER)
     async getAllOrderItem(): Promise<OrderItemResponseDto[]> {
         return this.executeRoute('getAll') as Promise<OrderItemResponseDto[]>;
     }
 
     @Get('/:Id')
+    @Roles(USER_ROLES.ADMIN)
+    @Roles(USER_ROLES.CUSTOMER)
     async getOrderItem(@Param() params: IdParamDto): Promise<OrderItemResponseDto> {
         return this.executeRoute('getOrderItem', params) as Promise<OrderItemResponseDto>;
     }
 
-    // @Post('/')
-    // async createOrderItem(@Body() createDto: CreateOrderItemDto): Promise<OrderItemResponseDto> {
-    //     return this.orderItemService.createOrderItem(createDto);
-    // }
 
     @Put('/:Id')
+    @Roles(USER_ROLES.CUSTOMER)
     async updateOrderItem(@Param() params: IdParamDto, @Body() updateDto: CreateOrderItemDto): Promise<OrderItemResponseDto> {
         return this.executeRoute('updateOrderItem', params, updateDto) as Promise<OrderItemResponseDto>;
     }
 
-    // @Delete('/:Id')
-    // async deleteOrderItem(@Param() params: IdParamDto): Promise<void> {
-    //     return this.executeRoute('deleteOrderItem', params) as Promise<void>;
-    // }
+    @Delete('/:Id')
+    @Roles(USER_ROLES.ADMIN)
+    async deleteOrderItem(@Param() params: IdParamDto): Promise<void> {
+        return this.executeRoute('deleteOrderItem', params) as Promise<void>;
+    }
 }

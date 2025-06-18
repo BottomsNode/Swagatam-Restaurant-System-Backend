@@ -7,7 +7,7 @@ import * as bcrypt from "bcrypt";
 import { CategoryEntity } from "../modules/category/entities/category.entity";
 import { CustomerEntity } from "../modules/customer/entities/customer.entity";
 import { MenuItemEntity } from "../modules/menu-item/entities/menu_item.entity";
-import { StaffEntity, ROLES } from '../modules/staff/entities/staff..entity';
+import { StaffEntity, STAFF_ROLES } from '../modules/staff/entities/staff..entity';
 import { TableEntity, TableStatus } from "../modules/table/entities/table.entity";
 import { Repository } from "typeorm";
 
@@ -117,10 +117,10 @@ export class DatabaseSeeder {
     }
 
     private async seedStaff() {
-        const staffRoles = Object.values(ROLES);
-        const staff = Array.from({ length: 5 }, (_, index) => ({
+        const staffRoles = Object.values(STAFF_ROLES);
+        const staff = Array.from({ length: 3 }, (_, index) => ({
             name: this.faker.person.fullName(),
-            role: staffRoles[index % staffRoles.length] as ROLES,
+            role: staffRoles[index % staffRoles.length] as STAFF_ROLES,
             email: this.faker.internet.email(),
         }));
 

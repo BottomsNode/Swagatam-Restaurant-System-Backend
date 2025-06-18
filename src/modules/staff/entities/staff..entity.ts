@@ -1,16 +1,7 @@
 import { AutoMap } from "@automapper/classes";
 import { OrderEntity } from "../../../modules/order/entities/order.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-
-export enum ROLES {
-    WAITER = 'WAITER',
-    CHEF = 'CHEF',
-    MANAGER = 'MANAGER',
-    CASHIER = 'CASHIER',
-    CLEANER = 'CLEANER',
-    ADMIN = 'ADMIN',
-    SUPPORT = 'SUPPORT',
-}
+import { STAFF_ROLES } from "src/modules/auth/dto/all.roles.dto";
 
 @Entity()
 export class StaffEntity {
@@ -23,8 +14,8 @@ export class StaffEntity {
     name: string;
 
     @AutoMap()
-    @Column({ type: 'enum', enum: ROLES, default: ROLES.WAITER })
-    role: ROLES;
+    @Column({ type: 'enum', enum: STAFF_ROLES, default: STAFF_ROLES.WAITER })
+    role: STAFF_ROLES;
 
     @AutoMap()
     @Column({ unique: true })
@@ -45,3 +36,5 @@ export class StaffEntity {
     @DeleteDateColumn()
     deletedAt: Date | null;
 }
+
+export { STAFF_ROLES };

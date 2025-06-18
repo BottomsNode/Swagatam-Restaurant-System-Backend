@@ -1,7 +1,6 @@
 import { AutoMap } from "@automapper/classes";
 import { ApiProperty } from "@nestjs/swagger";
 import { BaseDto } from "src/common/dto/base.dto";
-
 export class CustomerDto extends BaseDto {
 
     @ApiProperty()

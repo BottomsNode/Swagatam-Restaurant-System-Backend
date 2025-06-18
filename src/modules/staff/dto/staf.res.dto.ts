@@ -11,10 +11,6 @@ export class StaffResponseDto extends BaseResponseDto {
 
     @AutoMap()
     @ApiProperty()
-    role: string;
-
-    @AutoMap()
-    @ApiProperty()
     email: string;
 
     @AutoMap()

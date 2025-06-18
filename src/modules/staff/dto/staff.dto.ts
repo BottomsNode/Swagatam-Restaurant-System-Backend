@@ -13,9 +13,5 @@ export class StaffDto extends BaseDto{
 
     @AutoMap()
     @ApiProperty()
-    role: string;
-
-    @AutoMap()
-    @ApiProperty()
     email: string;
 }

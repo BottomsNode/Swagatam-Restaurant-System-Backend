@@ -6,10 +6,13 @@ import { TableService } from './table.service';
 import { CreateTableDto } from './dto/table.create.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
+import { Roles } from '../auth/decorators/sys.role.decorators';
+import { USER_ROLES } from '../auth/dto/all.roles.dto';
 
 @Controller('table')
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), SystemRoleGuard)
 @UseFilters(CommonExceptionFilter)
 export class TableController {
     constructor(private readonly tableService: TableService) { }
@@ -33,26 +36,31 @@ export class TableController {
     }
 
     @Get('/')
+    @Roles(USER_ROLES.CUSTOMER, USER_ROLES.ADMIN)
     async getAllTable(): Promise<TableResponseDto[]> {
         return this.executeRoute('getAll') as Promise<TableResponseDto[]>;
     }
 
     @Get('/:Id')
+    @Roles(USER_ROLES.CUSTOMER, USER_ROLES.ADMIN)
     async getTable(@Param() params: IdParamDto): Promise<TableResponseDto> {
         return this.executeRoute('getTable', params) as Promise<TableResponseDto>;
     }
 
     @Post('/')
+    @Roles(USER_ROLES.ADMIN)
     async createTable(@Body() createDto: CreateTableDto): Promise<TableResponseDto> {
         return this.tableService.createTable(createDto);
     }
 
     @Put('/:Id')
+    @Roles(USER_ROLES.ADMIN)
     async updateTable(@Param() params: IdParamDto, @Body() updateDto: CreateTableDto): Promise<TableResponseDto> {
         return this.executeRoute('updateTable', params, updateDto) as Promise<TableResponseDto>;
     }
 
     @Delete('/:Id')
+    @Roles(USER_ROLES.ADMIN)
     async deleteTable(@Param() params: IdParamDto): Promise<void> {
         return this.executeRoute('deleteTable', params) as Promise<void>;
     }

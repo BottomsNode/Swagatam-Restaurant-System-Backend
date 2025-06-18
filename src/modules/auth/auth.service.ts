@@ -9,7 +9,6 @@ import { CustomerEntity } from '../customer/entities/customer.entity';
 import { LoginCustomerDto } from './dto/login.dto';
 import { CustomerResponseDto } from '../customer/dto/customer.res.dto';
 import { CreateCustomerDto } from '../customer/dto/customer.create.dto';
-
 @Injectable()
 export class AuthService {
 
@@ -48,7 +47,7 @@ export class AuthService {
             throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
         }
 
-        const payload = { sub: customer.id, email: customer.email };
+        const payload = { sub: customer.id, email: customer.email , role : customer.role};
         // return token and message
         return {
             msg: 'Login successful',

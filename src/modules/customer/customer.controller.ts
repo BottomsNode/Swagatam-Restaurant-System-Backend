@@ -4,13 +4,18 @@ import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { CustomerResponseDto } from './dto/customer.res.dto';
 import { CreateCustomerDto } from './dto/customer.create.dto';
 import { CommonExceptionFilter } from 'src/common/error/exception.handler';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { LoggingInterceptors } from 'src/common/interceptors/logging.interceptor';
 import { TransformInterceptor } from 'src/common/interceptors/transform.interceptor';
+import { Roles } from '../auth/decorators/sys.role.decorators';
+import { USER_ROLES } from '../auth/dto/all.roles.dto';
+import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
 
 @ApiBearerAuth()
+@ApiTags("Users")
 @UseGuards(JwtAuthGuard)
+@UseGuards(SystemRoleGuard)
 @UseInterceptors(LoggingInterceptors,TransformInterceptor)
 @UseFilters(CommonExceptionFilter)
 @Controller('customer')
@@ -20,10 +25,9 @@ export class CustomerController {
         private readonly customerService: CustomerService,
     ) { }
 
-
     // GET Route Comman
     private async executeRoute(
-        operation: 'getAll' | 'getCustomer' | 'createCustomer' | 'updateCustomer' | 'deleteCustomer',
+        operation: 'getAll' | 'getCustomer' | 'updateCustomer' | 'deleteCustomer',
         params?: IdParamDto , body?: CreateCustomerDto
     ) {
         switch (operation) {
@@ -41,26 +45,25 @@ export class CustomerController {
     }
 
     @Get('/')
+    @Roles(USER_ROLES.ADMIN,USER_ROLES.CUSTOMER)
     async getAllCustomer(): Promise<CustomerResponseDto[]> {
         return this.executeRoute('getAll') as Promise<CustomerResponseDto[]>;
     }
 
     @Get('/:Id')
+    @Roles(USER_ROLES.CUSTOMER)
     async getCustomer(@Param() params: IdParamDto): Promise<CustomerResponseDto> {
         return this.executeRoute('getCustomer', params) as Promise<CustomerResponseDto>;
     }
 
-    // @Post('/')
-    // async createCustomer(@Body() createDto: CreateCustomerDto): Promise<CustomerResponseDto> {
-    //     return this.customerService.createCustomer(createDto);
-    // }
-
     @Put('/:Id')
+    @Roles(USER_ROLES.CUSTOMER)
     async updateCustomer(@Param() params: IdParamDto, @Body() updateDto: CreateCustomerDto): Promise<CustomerResponseDto> {
         return this.executeRoute('updateCustomer', params, updateDto) as Promise<CustomerResponseDto>;
     }
 
     @Delete('/:Id')
+    @Roles(USER_ROLES.ADMIN)
     async deleteCustomer(@Param() params: IdParamDto): Promise<void> {
         return this.executeRoute('deleteCustomer', params) as Promise<void>;
     }

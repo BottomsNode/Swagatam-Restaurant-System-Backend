@@ -31,6 +31,7 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptors } from './common/interceptors/logging.interceptor';
 import { ConsoleModule } from 'nestjs-console';
 import { SeederModule } from './seeders/seeder.module';
+import { SystemRoleGuard } from './modules/auth/guards/sys-role.guard';
 
 @Module({
   imports: [
@@ -93,6 +94,10 @@ import { SeederModule } from './seeders/seeder.module';
       useClass: LoggingInterceptors
   
     },
+    {
+      provide : APP_GUARD,
+      useClass : SystemRoleGuard
+    }
   ],
   exports: [CommonMapper],
 })
