@@ -2,7 +2,6 @@ import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, 
 import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { CreateCategoryDto } from './dto/category.create.dto';
 import { CategoryResponseDto } from './dto/category.res.dto';
-import { CommonExceptionFilter } from 'src/common/error/exception.handler';
 import { CategoryService } from './category.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
@@ -11,7 +10,6 @@ import { Roles } from '../auth/decorators/sys.role.decorators';
 
 @ApiBearerAuth()
 @UseGuards(SystemRoleGuard)
-@UseFilters(CommonExceptionFilter)
 @Controller('category')
 export class CategoryController {
     constructor(private readonly categoryService: CategoryService) { }

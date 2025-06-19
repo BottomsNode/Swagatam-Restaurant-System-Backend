@@ -8,7 +8,6 @@ import { AppDataSource } from './config/typeorm.config';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { CommonMapper } from './common/profile/common.mapper.service';
-import { CommonExceptionFilter } from './common/error/exception.handler';
 import { CategoryModule } from './modules/category/category.module';
 import { CustomerModule } from './modules/customer/customer.module';
 import { MenuItemModule } from './modules/menu-item/menu-item.module';
@@ -84,7 +83,6 @@ import { SystemRoleGuard } from './modules/auth/guards/sys-role.guard';
     AppService,
     DatabaseService,
     CommonMapper,
-    CommonExceptionFilter,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
