@@ -1,5 +1,4 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
-import { CommonExceptionFilter } from 'src/common/error/exception.handler';
 import { OrderService } from './order.service';
 import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { OrderResponseDto } from './dto/order.res.dto';
@@ -9,11 +8,12 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { Roles } from '../auth/decorators/sys.role.decorators';
 import { USER_ROLES } from '../auth/dto/all.roles.dto';
 import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
+// import { RpcGlobalExceptionFilter } from 'src/common/base-db-ops/filters';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @UseGuards(SystemRoleGuard)
-@UseFilters(CommonExceptionFilter)
+// @UseFilters(RpcGlobalExceptionFilter)
 @Controller('order')
 export class OrderController {
 

@@ -9,7 +9,7 @@ const EVENT_NAME_INDEX = 2;
 
 @Catch()
 export class RpcGlobalExceptionFilter<T = any, R = any> implements RpcExceptionFilter<T, R> {
-  constructor(@InjectPinoLogger(RpcGlobalExceptionFilter.name) private logger: PinoLogger) {}
+  constructor(@InjectPinoLogger(RpcGlobalExceptionFilter.name) private logger: PinoLogger) { }
 
   public catch(exception: T, _host: ArgumentsHost): Observable<R> {
     const rpcEx: RpcBaseException = exception instanceof RpcException ? this.normalizeRpcException(exception) : this.createRpcException(exception);

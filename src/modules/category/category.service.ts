@@ -7,10 +7,9 @@ import { Repository, Not } from "typeorm";
 import { CategoryResponseDto } from "./dto/category.res.dto";
 import { CategoryEntity } from "./entities/category.entity";
 import { CreateCategoryDto } from "./dto/category.create.dto";
-import { DbException } from "dist/common/base-db-ops";
-import { ArgumentNilException, RpcBaseException } from "dist/common/base-db-ops/exceptions";
-import { ERROR_STATUS } from "dist/common/error/code.status";
-
+import { RpcBaseException } from 'src/common/base-db-ops/exceptions/base';
+import { ArgumentNilException, DbException } from 'src/common/base-db-ops/exceptions';
+import { ERROR_STATUS } from "src/common/error/code.status";
 
 @Injectable()
 export class CategoryService {

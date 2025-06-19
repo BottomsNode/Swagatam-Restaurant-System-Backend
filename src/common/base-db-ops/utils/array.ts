@@ -4,8 +4,6 @@ import {
     differenceWith
 } from "lodash";
 
-
-
 export const difference = <T>(array: T[], other: T[], comparator?: Comparator<T>): T[] => {
   if (comparator == null) {
     return baseDifference(array, other);

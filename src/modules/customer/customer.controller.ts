@@ -3,7 +3,6 @@ import { CustomerService } from './customer.service';
 import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { CustomerResponseDto } from './dto/customer.res.dto';
 import { CreateCustomerDto } from './dto/customer.create.dto';
-import { CommonExceptionFilter } from 'src/common/error/exception.handler';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { LoggingInterceptors } from 'src/common/interceptors/logging.interceptor';
@@ -11,13 +10,14 @@ import { TransformInterceptor } from 'src/common/interceptors/transform.intercep
 import { Roles } from '../auth/decorators/sys.role.decorators';
 import { USER_ROLES } from '../auth/dto/all.roles.dto';
 import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
+// import { RpcGlobalExceptionFilter } from 'src/common/base-db-ops/filters';
 
 @ApiBearerAuth()
 @ApiTags("Users")
 @UseGuards(JwtAuthGuard)
 @UseGuards(SystemRoleGuard)
 @UseInterceptors(LoggingInterceptors,TransformInterceptor)
-@UseFilters(CommonExceptionFilter)
+// @UseFilters(RpcGlobalExceptionFilter)
 @Controller('customer')
 export class CustomerController {
 

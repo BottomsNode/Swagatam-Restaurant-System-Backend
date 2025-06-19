@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "esnext",
+    "module": "commonjs",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -19,8 +19,6 @@
     "noFallthroughCasesInSwitch": false,
     "moduleResolution": "node",
     "importHelpers": true,
-    "lib": ["es2017", "dom"],
-    "skipDefaultLibCheck": true,
   },
   "exclude": ["node_modules"]
 }

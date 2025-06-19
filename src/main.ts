@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ConfigService } from '@nestjs/config';
-import { CommonExceptionFilter } from './common/error/exception.handler';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
@@ -18,8 +17,6 @@ async function bootstrap() {
     },
   }));
 
-  // For Exception
-  app.useGlobalFilters(new CommonExceptionFilter());
 
   // Apply middleware globally
   // app.use(new LoggingMiddleware().use);

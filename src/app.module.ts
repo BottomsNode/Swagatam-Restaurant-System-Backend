@@ -95,7 +95,7 @@ import { SystemRoleGuard } from './modules/auth/guards/sys-role.guard';
     {
       provide : APP_GUARD,
       useClass : SystemRoleGuard
-    }
+    },
   ],
   exports: [CommonMapper],
 })

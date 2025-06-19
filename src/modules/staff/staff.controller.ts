@@ -1,6 +1,5 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
 import { IdParamDto } from 'src/common/dto/IdParam.dto';
-import { CommonExceptionFilter } from 'src/common/error/exception.handler';
 import { StaffResponseDto } from './dto/staf.res.dto';
 import { StaffService } from './staff.service';
 import { CreateStaffDto } from './dto/staff.create.dto';
@@ -10,12 +9,13 @@ import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
 import { Roles, Staff_Roles } from '../auth/decorators/sys.role.decorators';
 import { STAFF_ROLES, USER_ROLES } from '../auth/dto/all.roles.dto';
 import { StaffRoleGuard } from '../auth/guards/staff-role.guard';
+// import { RpcGlobalExceptionFilter } from 'src/common/base-db-ops/filters';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @UseGuards(SystemRoleGuard)
 @UseGuards(StaffRoleGuard)
-@UseFilters(CommonExceptionFilter)
+// @UseFilters(RpcGlobalExceptionFilter)
 @Controller('staff')
 export class StaffController {
     constructor(private readonly staffService: StaffService) { }

@@ -8,9 +8,8 @@ import { CustomerResponseDto } from './dto/customer.res.dto';
 import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { CreateCustomerDto } from './dto/customer.create.dto';
 import { ERROR_STATUS } from 'src/common/error/code.status';
-import { DbException } from 'src/common/base-db-ops';
 import { RpcBaseException } from 'src/common/base-db-ops/exceptions/base';
-import { ArgumentNilException } from 'src/common/base-db-ops/exceptions';
+import { ArgumentNilException, DbException } from 'src/common/base-db-ops/exceptions';
 
 @Injectable()
 export class CustomerService {
