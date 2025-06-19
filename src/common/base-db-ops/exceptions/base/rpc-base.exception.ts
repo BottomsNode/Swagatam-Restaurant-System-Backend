@@ -35,7 +35,7 @@ export class RpcBaseException extends RpcException {
     };
   }
 
-  public static createPayload(objectOrError: object | string, description?: string, statusCode?: number): object {
+  public static createPayload(objectOrError?: object | string, description?: string, statusCode?: number): object {
     if (!objectOrError) {
       return { statusCode, message: description };
     }

@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseService } from './config/connection.msg';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppDataSource } from './config/typeorm.config';
@@ -31,31 +31,21 @@ import { LoggingInterceptors } from './common/interceptors/logging.interceptor';
 import { ConsoleModule } from 'nestjs-console';
 import { SeederModule } from './seeders/seeder.module';
 import { SystemRoleGuard } from './modules/auth/guards/sys-role.guard';
-
+import { LoggerModule, Params } from 'nestjs-pino';
 @Module({
   imports: [
-    // For env Files
     ConfigModule.forRoot(),
-
-
-    // For Authentication
     AuthModule,
-
-    ConsoleModule,
     SeederModule,
-
-
-    // For Database Connection
     TypeOrmModule.forRoot(AppDataSource.options),
-
-
-    // For Automapper
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
-
-
-    // For Rate Limiting
+    LoggerModule.forRoot({
+      pinoHttp: {
+        transport: process.env.NODE_ENV !== 'production' ? { target: 'pino-pretty' } : undefined,
+      },
+    }),
     ThrottlerModule.forRoot({
       throttlers: [
         {
@@ -64,10 +54,6 @@ import { SystemRoleGuard } from './modules/auth/guards/sys-role.guard';
         },
       ],
     }),
-
-
-
-    // Other Modules
     CustomerModule,
     OrderModule,
     OrderItemModule,
@@ -78,7 +64,7 @@ import { SystemRoleGuard } from './modules/auth/guards/sys-role.guard';
   ],
 
   controllers: [AppController],
-  
+
   providers: [
     AppService,
     DatabaseService,
@@ -90,11 +76,11 @@ import { SystemRoleGuard } from './modules/auth/guards/sys-role.guard';
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptors
-  
+
     },
     {
-      provide : APP_GUARD,
-      useClass : SystemRoleGuard
+      provide: APP_GUARD,
+      useClass: SystemRoleGuard
     },
   ],
   exports: [CommonMapper],
