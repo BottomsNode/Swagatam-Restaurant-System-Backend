@@ -1,7 +1,6 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CustomerEntity } from './entities/customer.entity';
-import { Not, Repository } from 'typeorm';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { CustomerResponseDto } from './dto/customer.res.dto';
@@ -10,89 +9,83 @@ import { CreateCustomerDto } from './dto/customer.create.dto';
 import { ERROR_STATUS } from 'src/common/error/code.status';
 import { RpcBaseException } from 'src/common/base-db-ops/exceptions/base';
 import { ArgumentNilException, DbException } from 'src/common/base-db-ops/exceptions';
+import { CustomerRepository } from './repository/customer.repository';
+import { NotFoundException } from 'src/common/base-db-ops/exceptions/404-not-found.exception';
+import { IPageable } from 'src/common/base-db-ops/filtering';
+import { PageParams } from 'src/common/dto/PageParam.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class CustomerService {
+
     constructor(
-        @InjectRepository(CustomerEntity) private readonly customerRepository: Repository<CustomerEntity>,
+        @Inject("CustomerRepository") private readonly customerRepository: CustomerRepository,
         @InjectMapper() private readonly mapper: Mapper,
     ) { }
 
-    async getAllCustomer(): Promise<CustomerResponseDto[]> {
-        const entities = await this.customerRepository.find({
-            relations: ['orders'],
-            order: { id: 'ASC' },
-        });
+    async getAllCustomer(): Promise<CustomerResponseDto[] | IPageable<CustomerResponseDto>> {
+        console.log(this.customerRepository)
+        const entities = await this.customerRepository.allAsync();
         if (!entities || entities.length === 0) {
             throw new DbException(RpcBaseException.createPayload(`CUSTOMER_${ERROR_STATUS.NOT_FOUND}`));
         }
-        return this.mapper.mapArray(entities, CustomerEntity, CustomerResponseDto);
+        return entities
     }
 
-    async getCustomer(data: IdParamDto): Promise<CustomerResponseDto> {
-        if (!data?.Id) {
-            throw new ArgumentNilException('Customer ID cannot be null');
-        }
-        const entity = await this.customerRepository.findOne({
-            where: { id: data.Id },
-            relations: ['orders'],
-            order: { id: 'ASC' },
-        });
+    async getCustomer(params: IdParamDto): Promise<CustomerResponseDto> {
+        if (!params.Id) throw new ArgumentNilException('Customer ID cannot be null');
+        const entity = await this.customerRepository.getAsync(params.Id);
         if (!entity) {
-            throw new DbException(RpcBaseException.createPayload(`CUSTOMER_${ERROR_STATUS.NOT_FOUND}`));
+            throw new NotFoundException((`CUSTOMER_${ERROR_STATUS.NOT_FOUND}`));
         }
-        return this.mapper.map(entity, CustomerEntity, CustomerResponseDto);
+        return entity;
+    }
+
+    async getCustomerRecords(page_params: PageParams) {
+        const paginateRecords = await this.customerRepository.pagedAsync({ $page: page_params.page, $perPage: page_params.records });
+        if (!paginateRecords) {
+            throw new NotFoundException((`CUSTOMER_PAGE_${ERROR_STATUS.NOT_FOUND}`));
+        }
+        return paginateRecords;
+    }
+
+    async getTotalCustomers() {
+        const total_customers = await this.customerRepository.countAsync()
+        if (!total_customers) {
+            throw new NotFoundException((`CUSTOMER_PAGE_${ERROR_STATUS.NOT_FOUND}`));
+        }
+        return total_customers;
     }
 
     async updateCustomer(params: IdParamDto, updateDto: CreateCustomerDto): Promise<CustomerResponseDto> {
-        if (!params?.Id) {
-            throw new ArgumentNilException('Customer ID cannot be null');
-        }
-        if (!updateDto?.email) {
-            throw new ArgumentNilException('Email cannot be null');
-        }
-        const entity = await this.customerRepository.findOne({
-            where: { id: params.Id },
-        });
-        if (!entity) {
+        if (!params.Id) throw new ArgumentNilException('Customer ID cannot be null');
+        if (!updateDto?.email) throw new ArgumentNilException('Email cannot be null');
+
+        const existingCustomer = await this.customerRepository.getAsync(params.Id);
+        if (!existingCustomer) {
             throw new DbException(RpcBaseException.createPayload(`CUSTOMER_${ERROR_STATUS.NOT_FOUND}`));
         }
-        const existingCustomer = await this.customerRepository.findOne({
-            where: { email: updateDto.email, id: Not(params.Id) },
-        });
-        if (existingCustomer) {
-            throw new DbException(RpcBaseException.createPayload(`CUSTOMER_${ERROR_STATUS.ALREADY_EXISTS}`));
-        }
+        const hashedPassword = await bcrypt.hash(updateDto.password, 10);
+        updateDto.password = hashedPassword;
         const updatedEntity = this.mapper.map(updateDto, CreateCustomerDto, CustomerEntity);
         updatedEntity.id = params.Id;
-        await this.customerRepository.update(updatedEntity.id, updatedEntity);
-        const customerResponse = await this.customerRepository.findOne({
-            where: { id: params.Id },
-        });
-        if (!customerResponse) {
+        console.log("Updated ", updatedEntity);
+        await this.customerRepository.updateAsync(updatedEntity);
+
+        const refreshed = await this.customerRepository.getAsync(params.Id);
+        if (!refreshed) {
             throw new DbException(RpcBaseException.createPayload(`CUSTOMER_${ERROR_STATUS.NOT_FOUND}`));
         }
-        return this.mapper.map(customerResponse, CustomerEntity, CustomerResponseDto);
+
+        return refreshed;
     }
 
-    async deleteCustomer(data: IdParamDto): Promise<void> {
-        if (!data?.Id) {
-            throw new ArgumentNilException('Customer ID cannot be null');
+    async deleteCustomer(params: IdParamDto): Promise<void> {
+        if (!params.Id) throw new ArgumentNilException('Customer ID cannot be null');
+        const deleted = await this.customerRepository.deleteAsync(params.Id);
+        if (!deleted) {
+            throw new DbException(RpcBaseException.createPayload(`CUSTOMER_${ERROR_STATUS.NOT_FOUND}`));
         }
-        const entity = await this.customerRepository.findOne({
-            where: { id: data.Id },
-        });
-        if (!entity) {
-            throw new DbException(
-                RpcBaseException.createPayload(
-                    `CUSTOMER_${ERROR_STATUS.NOT_FOUND}`,
-                    `Customer with ID ${data.Id} not found`,
-                    HttpStatus.NOT_FOUND,
-                ),
-                `Customer with ID ${data.Id} not found`,
-            );
-        }
-        await this.customerRepository.softDelete(entity.id);
     }
 }
 

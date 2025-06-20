@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "strict": false,
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
@@ -12,13 +13,11 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "moduleResolution": "node",
-    "importHelpers": true,
   },
   "exclude": ["node_modules"]
 }

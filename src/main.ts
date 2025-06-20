@@ -4,7 +4,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { RpcGlobalExceptionInterceptor } from './common/interceptors/exception.interceptor';
-import { Logger } from 'nestjs-pino';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,10 +17,7 @@ async function bootstrap() {
     },
   }));
 
-  // Pino Logger
-  app.useLogger(await app.resolve(Logger));
-
-  // Apply middleware globally
+  // app.useLogger(await app.resolve(Logger));
   app.useGlobalInterceptors(new RpcGlobalExceptionInterceptor());
 
   // Swagger Configuration

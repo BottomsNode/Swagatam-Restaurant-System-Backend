@@ -17,7 +17,6 @@ export class CustomerResponseDto extends BaseResponseDto {
     @AutoMap()
     email: string;
 
-
     @ApiProperty()
     @AutoMap()
     orders?: OrderDto[];

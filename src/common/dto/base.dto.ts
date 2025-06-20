@@ -17,5 +17,5 @@ export class BaseDto {
 
     @ApiProperty()
     @AutoMap()
-    role : USER_ROLES
+    role?: USER_ROLES;
 }

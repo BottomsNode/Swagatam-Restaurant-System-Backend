@@ -35,15 +35,13 @@ export class MenuItemController {
     }
 
     @Get('/')
-    @Roles(USER_ROLES.ADMIN)
-    @Roles(USER_ROLES.CUSTOMER)
+    @Roles(USER_ROLES.ADMIN,USER_ROLES.CUSTOMER)
     async getAllMenuItem(): Promise<MenuItemResponseDto[]> {
         return this.executeRoute('getAll') as Promise<MenuItemResponseDto[]>;
     }
 
     @Get('/:Id')
-    @Roles(USER_ROLES.ADMIN)
-    @Roles(USER_ROLES.CUSTOMER)
+    @Roles(USER_ROLES.ADMIN,USER_ROLES.CUSTOMER)
     async getMenuItem(@Param() params: IdParamDto): Promise<MenuItemResponseDto> {
         return this.executeRoute('getMenuItem', params) as Promise<MenuItemResponseDto>;
     }

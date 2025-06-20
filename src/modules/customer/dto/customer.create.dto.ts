@@ -11,8 +11,7 @@ export class CreateCustomerDto {
     })
     @AutoMap()
     @IsNotEmpty({ message: 'Name cannot be empty' })
-    @Length(3, 3, { message: 'Name must be exactly 3 characters long' })
-    @Matches(/^[a-zA-Z]{3}$/, { message: 'Name must contain only alphabetical characters' })
+    @Length(3)
     name: string;
 
     @ApiProperty({
@@ -21,7 +20,6 @@ export class CreateCustomerDto {
     })
     @AutoMap()
     @IsNotEmpty({ message: 'Phone number cannot be empty' })
-    @Matches(/^(?:\+91)?[6-9]\d{9}$/, { message: 'Invalid Indian phone number format' })
     phone: string;
 
     @ApiProperty({

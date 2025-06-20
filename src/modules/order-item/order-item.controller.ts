@@ -8,12 +8,10 @@ import { AuthGuard } from '@nestjs/passport';
 import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
 import { Roles } from '../auth/decorators/sys.role.decorators';
 import { USER_ROLES } from '../auth/dto/all.roles.dto';
-// import { RpcGlobalExceptionFilter } from 'src/common/base-db-ops/filters';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @UseGuards(SystemRoleGuard)
-// @UseFilters(RpcGlobalExceptionFilter)
 @Controller('order-item')
 export class OrderItemController {
     constructor(private readonly orderItemService: OrderItemService) { }
@@ -37,15 +35,13 @@ export class OrderItemController {
     }
 
     @Get('/')
-    @Roles(USER_ROLES.ADMIN)
-    @Roles(USER_ROLES.CUSTOMER)
+    @Roles(USER_ROLES.ADMIN,USER_ROLES.CUSTOMER)
     async getAllOrderItem(): Promise<OrderItemResponseDto[]> {
         return this.executeRoute('getAll') as Promise<OrderItemResponseDto[]>;
     }
 
     @Get('/:Id')
-    @Roles(USER_ROLES.ADMIN)
-    @Roles(USER_ROLES.CUSTOMER)
+    @Roles(USER_ROLES.ADMIN,USER_ROLES.CUSTOMER)
     async getOrderItem(@Param() params: IdParamDto): Promise<OrderItemResponseDto> {
         return this.executeRoute('getOrderItem', params) as Promise<OrderItemResponseDto>;
     }

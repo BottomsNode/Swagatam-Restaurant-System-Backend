@@ -8,12 +8,10 @@ import { AuthGuard } from '@nestjs/passport';
 import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
 import { Roles } from '../auth/decorators/sys.role.decorators';
 import { USER_ROLES } from '../auth/dto/all.roles.dto';
-// import { RpcGlobalExceptionFilter } from 'src/common/base-db-ops/filters';
 
 @Controller('table')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'), SystemRoleGuard)
-// @UseFilters(RpcGlobalExceptionFilter)
 export class TableController {
     constructor(private readonly tableService: TableService) { }
 

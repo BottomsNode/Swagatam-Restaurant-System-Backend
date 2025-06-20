@@ -33,22 +33,19 @@ export class CategoryController {
     }
 
     @Get('/')
-    @Roles(USER_ROLES.ADMIN)
-    @Roles(USER_ROLES.CUSTOMER)
+    @Roles(USER_ROLES.ADMIN, USER_ROLES.CUSTOMER)
     async getAllCategory(): Promise<CategoryResponseDto[]> {
         return this.executeRoute('getAll') as Promise<CategoryResponseDto[]>;
     }
 
     @Get('/:Id')
-    @Roles(USER_ROLES.ADMIN)
-    @Roles(USER_ROLES.CUSTOMER)
+    @Roles(USER_ROLES.ADMIN, USER_ROLES.CUSTOMER)
     async getCategory(@Param() params: IdParamDto): Promise<CategoryResponseDto> {
         return this.executeRoute('getCategory', params) as Promise<CategoryResponseDto>;
     }
 
     @Post('/')
-    @Roles(USER_ROLES.ADMIN)
-    @Roles(USER_ROLES.CUSTOMER)
+    @Roles(USER_ROLES.ADMIN, USER_ROLES.CUSTOMER)
     async createCategory(@Body() createDto: CreateCategoryDto): Promise<CategoryResponseDto> {
         return this.categoryService.createCategory(createDto);
     }

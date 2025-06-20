@@ -8,12 +8,10 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { Roles } from '../auth/decorators/sys.role.decorators';
 import { USER_ROLES } from '../auth/dto/all.roles.dto';
 import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
-// import { RpcGlobalExceptionFilter } from 'src/common/base-db-ops/filters';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @UseGuards(SystemRoleGuard)
-// @UseFilters(RpcGlobalExceptionFilter)
 @Controller('order')
 export class OrderController {
 
@@ -38,6 +36,7 @@ export class OrderController {
     }
 
     @Get('/')
+    @Roles(USER_ROLES.ADMIN,USER_ROLES.CUSTOMER)
     async getAllOrder(): Promise<OrderResponseDto[]> {
         return this.executeRoute('getAll') as Promise<OrderResponseDto[]>;
     }

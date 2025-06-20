@@ -9,6 +9,7 @@ import { TransformInterceptor } from 'src/common/interceptors/transform.intercep
 import { Roles } from '../auth/decorators/sys.role.decorators';
 import { USER_ROLES } from '../auth/dto/all.roles.dto';
 import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
+import { PageParams } from 'src/common/dto/PageParam.dto';
 
 @ApiBearerAuth()
 @ApiTags("Users")
@@ -17,40 +18,54 @@ import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
 @UseInterceptors(TransformInterceptor)
 @Controller('customer')
 export class CustomerController {
+    constructor(private readonly customerService: CustomerService) { }
 
-    constructor(
-        private readonly customerService: CustomerService,
-    ) { }
-
-    // GET Route Comman
     private async executeRoute(
-        operation: 'getAll' | 'getCustomer' | 'updateCustomer' | 'deleteCustomer',
-        params?: IdParamDto , body?: CreateCustomerDto
+        operation: 'getAll' | 'getCustomer' | 'updateCustomer' | 'deleteCustomer' | 'getRecords' | 'getTotal',
+        params?: IdParamDto,
+        body?: CreateCustomerDto,
+        page?: PageParams,
     ) {
         switch (operation) {
             case 'getAll':
                 return this.customerService.getAllCustomer();
             case 'getCustomer':
-                return this.customerService.getCustomer(params as IdParamDto);
+                return this.customerService.getCustomer(params);
             case 'updateCustomer':
-                return this.customerService.updateCustomer(params as IdParamDto, body as CreateCustomerDto);
+                return this.customerService.updateCustomer(params, body);
             case 'deleteCustomer':
-                return this.customerService.deleteCustomer(params as IdParamDto);
+                return this.customerService.deleteCustomer(params);
+            case 'getRecords':
+                return this.customerService.getCustomerRecords(page);
+            case 'getTotal':
+                return this.customerService.getTotalCustomers()
             default:
                 throw new HttpException('Invalid operation', HttpStatus.BAD_REQUEST);
         }
     }
 
     @Get('/')
-    @Roles(USER_ROLES.ADMIN,USER_ROLES.CUSTOMER)
+    @Roles(USER_ROLES.ADMIN, USER_ROLES.CUSTOMER)
     async getAllCustomer(): Promise<CustomerResponseDto[]> {
         return this.executeRoute('getAll') as Promise<CustomerResponseDto[]>;
     }
 
     @Get('/:Id')
-    @Roles(USER_ROLES.CUSTOMER)
+    @Roles(USER_ROLES.ADMIN, USER_ROLES.CUSTOMER)
     async getCustomer(@Param() params: IdParamDto): Promise<CustomerResponseDto> {
         return this.executeRoute('getCustomer', params) as Promise<CustomerResponseDto>;
+    }
+
+    @Get('/:page/:records')
+    @Roles(USER_ROLES.ADMIN, USER_ROLES.CUSTOMER)
+    async getCustomerRecords(@Param() pages: PageParams): Promise<CustomerResponseDto> {
+        return this.executeRoute('getRecords', null, null, pages) as Promise<CustomerResponseDto>
+    }
+
+    @Get('/tally/all/a')
+    @Roles(USER_ROLES.ADMIN, USER_ROLES.CUSTOMER)
+    async getCustomerTotal(): Promise<CustomerResponseDto> {
+        return this.executeRoute('getTotal') as Promise<CustomerResponseDto>
     }
 
     @Put('/:Id')

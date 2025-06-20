@@ -28,10 +28,9 @@ import { StaffController } from './modules/staff/staff.controller';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptors } from './common/interceptors/logging.interceptor';
-import { ConsoleModule } from 'nestjs-console';
 import { SeederModule } from './seeders/seeder.module';
 import { SystemRoleGuard } from './modules/auth/guards/sys-role.guard';
-import { LoggerModule, Params } from 'nestjs-pino';
+import { LoggerModule } from 'nestjs-pino';
 @Module({
   imports: [
     ConfigModule.forRoot(),

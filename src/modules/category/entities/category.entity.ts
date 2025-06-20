@@ -8,12 +8,12 @@ export class CategoryEntity {
     @AutoMap()
     id: number;
 
-    @Column()
+    @Column({ unique: true })
     @AutoMap()
     name: string;
 
     @AutoMap()
-    @OneToMany(()=> MenuItemEntity, (menuItem)=> menuItem.category)
+    @OneToMany(() => MenuItemEntity, (menuItem) => menuItem.category)
     menuItems: MenuItemEntity[];
 
     @AutoMap()

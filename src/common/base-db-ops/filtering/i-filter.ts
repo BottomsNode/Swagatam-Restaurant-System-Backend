@@ -8,7 +8,7 @@ export interface IFilterBase<TId = string> {
 
 export interface IPageableFilterBase<TId = string> extends IFilterBase<TId> {
   $page?: number;
-  $perPage?: number;
+  $perPage: number;
 }
 
 export interface IResolvableUrl {

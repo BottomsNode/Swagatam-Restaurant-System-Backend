@@ -7,6 +7,9 @@ import { Repository, Not } from 'typeorm';
 import { StaffResponseDto } from './dto/staf.res.dto';
 import { StaffEntity } from './entities/staff..entity';
 import { CreateStaffDto } from './dto/staff.create.dto';
+import { DbException } from 'src/common/base-db-ops';
+import { RpcBaseException } from 'src/common/base-db-ops/exceptions';
+import { ERROR_STATUS } from 'src/common/error/code.status';
 
 @Injectable()
 export class StaffService {
@@ -33,7 +36,8 @@ export class StaffService {
             order: { id: 'ASC' },
         });
         if (!entity) {
-            throw new HttpException(`Staff with ID ${data.Id} not found`, HttpStatus.NOT_FOUND);
+            // throw new HttpException(`Staff with ID ${data.Id} not found`, HttpStatus.NOT_FOUND);
+            throw new RpcBaseException(RpcBaseException.createPayload(`STAFF_${ERROR_STATUS.NOT_FOUND}`), HttpStatus.NOT_FOUND, ERROR_STATUS.NOT_FOUND)
         }
         return this.mapper.map(entity, StaffEntity, StaffResponseDto);
     }
