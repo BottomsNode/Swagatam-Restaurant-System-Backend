@@ -1,7 +1,7 @@
+import { BaseResponseDto } from "@/common/dto/base.res.dto";
+import { OrderItemResponseDto } from "@/modules/order-item/dto/orderItem.res.dto";
 import { AutoMap } from "@automapper/classes";
 import { ApiProperty } from "@nestjs/swagger";
-import { BaseResponseDto } from "src/common/dto/base.res.dto";
-import { OrderItemResponseDto } from "src/modules/order-item/dto/orderItem.res.dto";
 
 export class OrderResponseDto extends BaseResponseDto {
 

@@ -1,15 +1,15 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CustomerService } from './customer.service';
-import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { CustomerResponseDto } from './dto/customer.res.dto';
 import { CreateCustomerDto } from './dto/customer.create.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { TransformInterceptor } from 'src/common/interceptors/transform.interceptor';
 import { Roles } from '../auth/decorators/sys.role.decorators';
 import { USER_ROLES } from '../auth/dto/all.roles.dto';
 import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
-import { PageParams } from 'src/common/dto/PageParam.dto';
+import { IdParamDto } from '@/common/dto/IdParam.dto';
+import { PageParams } from '@/common/dto/PageParam.dto';
+import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
 
 @ApiBearerAuth()
 @ApiTags("Users")

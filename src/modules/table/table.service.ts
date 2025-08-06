@@ -2,11 +2,11 @@ import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { Repository, Not } from 'typeorm';
 import { TableResponseDto } from './dto/table.res.dto';
 import { TableEntity, TableStatus } from './entities/table.entity';
 import { CreateTableDto } from './dto/table.create.dto';
+import { IdParamDto } from '@/common/dto/IdParam.dto';
 
 @Injectable()
 export class TableService {

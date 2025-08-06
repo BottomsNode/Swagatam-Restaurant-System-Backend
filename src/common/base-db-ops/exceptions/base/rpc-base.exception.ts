@@ -1,4 +1,4 @@
-import { isArray, isObject } from "../../utils";
+import { isArray, isObject } from "common/base-db-ops/utils";
 import { RpcException } from "@nestjs/microservices";
 
 export class RpcBaseException extends RpcException {

@@ -1,7 +1,7 @@
 import { AutoMap } from "@automapper/classes";
 import { OrderEntity } from "../../../modules/order/entities/order.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { STAFF_ROLES } from "src/modules/auth/dto/all.roles.dto";
+import { STAFF_ROLES } from "@/modules/auth/dto/all.roles.dto";
 
 @Entity()
 export class StaffEntity {

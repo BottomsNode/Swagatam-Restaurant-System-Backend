@@ -1,9 +1,9 @@
+import { CreateCustomerDto } from '@/modules/customer/dto/customer.create.dto';
+import { CustomerResponseDto } from '@/modules/customer/dto/customer.res.dto';
+import { CustomerEntity } from '@/modules/customer/entities/customer.entity';
 import { Mapper, MappingProfile, createMap, forMember, mapFrom } from '@automapper/core';
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { Injectable } from '@nestjs/common';
-import { CreateCustomerDto } from 'src/modules/customer/dto/customer.create.dto';
-import { CustomerResponseDto } from 'src/modules/customer/dto/customer.res.dto';
-import { CustomerEntity } from 'src/modules/customer/entities/customer.entity';
 
 @Injectable()
 export class CustomerProfile extends AutomapperProfile {

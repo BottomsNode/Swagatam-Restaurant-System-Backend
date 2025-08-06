@@ -1,8 +1,8 @@
+import { BaseResponseDto } from "@/common/dto/base.res.dto";
+import { MenuItemDto } from "@/modules/menu-item/dto/menuItem.dto";
 import { CategoryDto } from "./category.dto";
 import { AutoMap } from "@automapper/classes";
 import { ApiProperty } from "@nestjs/swagger";
-import { BaseResponseDto } from "src/common/dto/base.res.dto";
-import { MenuItemDto } from "src/modules/menu-item/dto/menuItem.dto";
 
 export class CategoryResponseDto extends BaseResponseDto {
 

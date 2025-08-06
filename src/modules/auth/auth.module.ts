@@ -8,8 +8,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { AutomapperModule } from '@automapper/nestjs';
 import { LocalStrategy } from './strategies/local-strategy';
 import * as dotenv from 'dotenv';
-import { CustomerProfile } from 'src/common/profile/customer.mapper.service';
 import { JwtStrategy } from './strategies/jwt-strategy';
+import { CustomerProfile } from '@/common/profile/customer.mapper.service';
 dotenv.config({ path: './.env' });
 
 @Module({

@@ -1,6 +1,5 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { OrderResponseDto } from './dto/order.res.dto';
 import { CreateOrderDto } from './dto/order.create.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -8,6 +7,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { Roles } from '../auth/decorators/sys.role.decorators';
 import { USER_ROLES } from '../auth/dto/all.roles.dto';
 import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
+import { IdParamDto } from '@/common/dto/IdParam.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))

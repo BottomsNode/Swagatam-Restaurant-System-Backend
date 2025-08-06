@@ -2,14 +2,13 @@ import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { Repository, Not } from 'typeorm';
 import { StaffResponseDto } from './dto/staf.res.dto';
 import { StaffEntity } from './entities/staff..entity';
 import { CreateStaffDto } from './dto/staff.create.dto';
-import { DbException } from 'src/common/base-db-ops';
-import { RpcBaseException } from 'src/common/base-db-ops/exceptions';
-import { ERROR_STATUS } from 'src/common/error/code.status';
+import { RpcBaseException } from '@/common/base-db-ops/exceptions';
+import { IdParamDto } from '@/common/dto/IdParam.dto';
+import { ERROR_STATUS } from '@/common/error/code.status';
 
 @Injectable()
 export class StaffService {

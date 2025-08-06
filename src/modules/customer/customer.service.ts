@@ -1,19 +1,17 @@
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CustomerEntity } from './entities/customer.entity';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { CustomerResponseDto } from './dto/customer.res.dto';
-import { IdParamDto } from 'src/common/dto/IdParam.dto';
-import { CreateCustomerDto } from './dto/customer.create.dto';
-import { ERROR_STATUS } from 'src/common/error/code.status';
-import { RpcBaseException } from 'src/common/base-db-ops/exceptions/base';
-import { ArgumentNilException, DbException } from 'src/common/base-db-ops/exceptions';
-import { CustomerRepository } from './repository/customer.repository';
-import { NotFoundException } from 'src/common/base-db-ops/exceptions/404-not-found.exception';
-import { IPageable } from 'src/common/base-db-ops/filtering';
-import { PageParams } from 'src/common/dto/PageParam.dto';
 import * as bcrypt from 'bcrypt';
+import { CustomerRepository } from './repository/customer.repository';
+import { DbException } from '@/common/base-db-ops';
+import { RpcBaseException, ArgumentNilException } from '@/common/base-db-ops/exceptions';
+import { IPageable } from '@/common/base-db-ops/filtering';
+import { IdParamDto } from '@/common/dto/IdParam.dto';
+import { PageParams } from '@/common/dto/PageParam.dto';
+import { ERROR_STATUS } from '@/common/error/code.status';
+import { CreateCustomerDto } from './dto/customer.create.dto';
 
 @Injectable()
 export class CustomerService {

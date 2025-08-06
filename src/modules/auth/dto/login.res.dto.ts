@@ -1,5 +1,5 @@
+import { CustomerResponseDto } from "@/modules/customer/dto/customer.res.dto";
 import { AutoMap } from "@automapper/classes";
-import { CustomerResponseDto } from "src/modules/customer/dto/customer.res.dto";
 
 export class LoginResponseDto {
     @AutoMap()

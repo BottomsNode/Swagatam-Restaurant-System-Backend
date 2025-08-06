@@ -2,7 +2,6 @@ import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { BadRequestException, HttpException, HttpStatus, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { EntityManager, Repository } from 'typeorm';
 import { OrderResponseDto } from './dto/order.res.dto';
 import { OrderEntity, OrderStatus } from './entities/order.entity';
@@ -11,6 +10,7 @@ import { MenuItemEntity } from '../menu-item/entities/menu_item.entity';
 import { CreateOrderItemDto } from '../order-item/dto/orderItem.create.dto';
 import { OrderItemEntity } from '../order-item/entities/order_item.entity';
 import { TableEntity, TableStatus } from '../table/entities/table.entity';
+import { IdParamDto } from '@/common/dto/IdParam.dto';
 
 @Injectable()
 export class OrderService {

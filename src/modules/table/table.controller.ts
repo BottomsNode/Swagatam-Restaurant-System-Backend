@@ -1,5 +1,4 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
-import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { TableResponseDto } from './dto/table.res.dto';
 import { TableService } from './table.service';
 import { CreateTableDto } from './dto/table.create.dto';
@@ -8,6 +7,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
 import { Roles } from '../auth/decorators/sys.role.decorators';
 import { USER_ROLES } from '../auth/dto/all.roles.dto';
+import { IdParamDto } from '@/common/dto/IdParam.dto';
 
 @Controller('table')
 @ApiBearerAuth()

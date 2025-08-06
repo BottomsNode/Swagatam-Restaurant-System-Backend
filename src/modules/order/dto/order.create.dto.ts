@@ -1,7 +1,7 @@
+import { CreateOrderItemDto } from "@/modules/order-item/dto/orderItem.create.dto";
 import { AutoMap } from "@automapper/classes";
 import { IsNotEmpty, ValidateNested } from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { CreateOrderItemDto } from "src/modules/order-item/dto/orderItem.create.dto";
 
 export class CreateOrderDto {
 

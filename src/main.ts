@@ -9,7 +9,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  // For Validation
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
     transformOptions: {
@@ -17,14 +16,12 @@ async function bootstrap() {
     },
   }));
 
-  // app.useLogger(await app.resolve(Logger));
   app.useGlobalInterceptors(new RpcGlobalExceptionInterceptor());
 
-  // Swagger Configuration
   const config = new DocumentBuilder()
     .setTitle('API Documentation')
     .setDescription('Swagger For API Documentation')
-    .addServer(`http://localhost:${configService.get('PORT')!}/`, `${configService.get('DB_NAME')} Local environment`)
+    // .addServer(`http://localhost:${configService.get('PORT')!}/`, `${configService.get('DB_NAME')} Local environment`)
     .addTag(`API's of ${configService.get('DB_NAME')}`)
     .addBearerAuth()
     .build();

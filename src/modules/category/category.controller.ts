@@ -1,5 +1,4 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
-import { IdParamDto } from 'src/common/dto/IdParam.dto';
 import { CreateCategoryDto } from './dto/category.create.dto';
 import { CategoryResponseDto } from './dto/category.res.dto';
 import { CategoryService } from './category.service';
@@ -7,6 +6,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { SystemRoleGuard } from '../auth/guards/sys-role.guard';
 import { USER_ROLES } from '../auth/dto/all.roles.dto';
 import { Roles } from '../auth/decorators/sys.role.decorators';
+import { IdParamDto } from '@/common/dto/IdParam.dto';
 
 @ApiBearerAuth()
 @UseGuards(SystemRoleGuard)
