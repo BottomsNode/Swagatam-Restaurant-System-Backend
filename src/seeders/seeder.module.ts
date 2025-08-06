@@ -8,9 +8,13 @@ import { TableEntity } from '../modules/table/entities/table.entity';
 import { DatabaseSeeder } from './seeders.service';
 import { AppDataSource } from '../config/typeorm.config';
 import { ConfigModule } from '@nestjs/config';
+
 @Module({
     imports: [
-        ConfigModule.forRoot(),
+        ConfigModule.forRoot({
+            envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
+            isGlobal: true,
+        }),
         TypeOrmModule.forRoot(AppDataSource.options),
         TypeOrmModule.forFeature([
             CustomerEntity,

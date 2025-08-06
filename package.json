@@ -21,7 +21,8 @@
     "migration:generate": "npx ts-node -P ./tsconfig.json -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate -d ./src/config/typeorm.config.ts ./src/database/migrations/migration",
     "migration:run": "npx ts-node -P ./tsconfig.json -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d ./src/config/typeorm.config.ts",
     "migration:revert": "npx ts-node -P ./tsconfig.json -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:revert -d ./src/config/typeorm.config.ts",
-    "seed": "ts-node src/seeders/seed.cmd.ts"
+    "seed": "NODE_ENV=development ts-node -r tsconfig-paths/register src/seeders/seed.cmd.ts",
+    "seed:prod": "NODE_ENV=production node dist/seeders/seed.cmd.js"
   },
   "dependencies": {
     "@automapper/classes": "^8.8.1",
@@ -73,10 +74,7 @@
     "cross-env": "^10.0.0",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-prettier": "^5.2.2",
     "globals": "^16.0.0",
-    "jest": "^29.7.0",
-    "nestjs-seeder": "^0.3.2",
     "prettier": "^3.4.2",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
