@@ -4,10 +4,13 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { RpcGlobalExceptionInterceptor } from './common/interceptors/exception.interceptor';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+  const port: number = configService.get('PORT') || 3000;
+  const swaggerPath: string = configService.get('SWAGGER_DOCS') || 'api/docs';
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -18,49 +21,47 @@ async function bootstrap() {
     }),
   );
 
+  if (process.env.NODE_ENV !== 'production') {
+    app.useGlobalInterceptors(new LoggingInterceptor());
+  }
+
   app.useGlobalInterceptors(new RpcGlobalExceptionInterceptor());
 
-  const config = new DocumentBuilder()
+  const swaggerConfig = new DocumentBuilder()
     .setTitle('API Documentation')
     .setDescription('Swagger For API Documentation')
-    // .addServer(`http://localhost:${configService.get('PORT')!}/`, `${configService.get('DB_NAME')} Local environment`)
     .addTag(`API's of ${configService.get('DB_NAME')}`)
     .addBearerAuth()
     .build();
 
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup(
-    `${configService.get('SWAGGER_DOCS')}`,
-    app,
-    documentFactory,
-  );
+  const swaggerDoc = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup(swaggerPath, app, swaggerDoc);
 
-  await app.listen(configService.get('PORT'));
+  await app.listen(port);
 
-  // Start background tasks
+  console.log(`🚀 Application started on port ${port}`);
+  console.log(`📘 Swagger docs available at /${swaggerPath}`);
+
   runHeartbeat();
   monitorMemory();
 }
-bootstrap()
-  .then(() => {
-    console.log(`Appication Started on ${process.env.PORT}`);
-  })
-  .catch((error) => {
-    console.error('Error starting app:', error);
-  });
+
+bootstrap().catch((error) => {
+  console.error('❌ Error starting app:', error);
+});
 
 function runHeartbeat(): void {
   let count = 1;
   setInterval(() => {
-    console.log(`💓 Application heartbeat... (${count++})`);
-  }, 10000);
+    console.log(`✅ [Heartbeat] Application is alive... (${count++})`);
+  }, 10_000);
 }
 
 function monitorMemory(): void {
   setInterval(() => {
     const used = process.memoryUsage();
     console.log(
-      `📊 Memory Usage - Heap Used: ${(used.heapUsed / 1024 / 1024).toFixed(2)} MB`,
+      `📈 [Memory] Heap Used: ${(used.heapUsed / 1024 / 1024).toFixed(2)} MB | RSS: ${(used.rss / 1024 / 1024).toFixed(2)} MB`,
     );
-  }, 60000);
+  }, 60_000);
 }
