@@ -17,10 +17,9 @@ export interface RequestUser {
 }
 
 // Define a custom request interface
-interface CustomRequest extends Request {
+export interface CustomRequest extends Request {
   user?: RequestUser;
 }
-
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
