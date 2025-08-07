@@ -5,7 +5,7 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { Observable, tap } from 'rxjs';
-import * as express from 'express';
+import { Request as ExpressRequest } from 'express';
 import { USER_ROLES } from '@/modules/auth/dto/all.roles.dto';
 
 export interface RequestUser {
@@ -14,8 +14,7 @@ export interface RequestUser {
   role: string | USER_ROLES;
   permissions?: string[];
 }
-
-export interface CustomRequest extends express.Request {
+export interface CustomRequest extends ExpressRequest {
   user?: RequestUser;
 }
 
