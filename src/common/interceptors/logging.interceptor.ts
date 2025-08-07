@@ -23,28 +23,16 @@ export interface CustomRequest extends express.Request {
 export class LoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const now = Date.now();
-
     const request = context.switchToHttp().getRequest<CustomRequest>();
 
-    console.log(
-      '\n(INTERCEPTOR) >>>>>>>>>>>>>>>>>>>>>>> INCOMING REQUEST >>>>>>>>>>>>>>>>>>>>>>>',
-    );
-    console.log(
-      `[${new Date(now).toISOString()}] ${request.method} ${request.url}`,
-    );
-    console.log('User:', request.user ?? 'Unauthenticated');
-    console.log('Body:', request.body);
-    console.log('Query:', request.query);
-    console.log('Params:', request.params);
+    const method = request.method;
+    const url = request.url;
 
     return next.handle().pipe(
       tap(() => {
         const responseTime = Date.now() - now;
         console.log(
-          '\n(INTERCEPTOR) >>>>>>>>>>>>>>>>>>>>>>> REQUEST COMPLETED >>>>>>>>>>>>>>>>>>>>>>>',
-        );
-        console.log(
-          `[${new Date().toISOString()}] ${request.method} ${request.url} - ${responseTime}ms`,
+          `[${new Date().toISOString()}] ${method} ${url} - ${responseTime}ms`,
         );
       }),
     );
