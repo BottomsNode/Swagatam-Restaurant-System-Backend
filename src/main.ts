@@ -30,6 +30,10 @@ async function bootstrap() {
   SwaggerModule.setup(`${configService.get('SWAGGER_DOCS')}`, app, documentFactory);
 
   await app.listen(configService.get('PORT')!);
+
+  // Start background tasks
+  runHeartbeat();
+  monitorMemory();
 }
 bootstrap()
   .then(() => {
@@ -39,3 +43,18 @@ bootstrap()
     console.error('Error starting app:', error);
   });
 
+function runHeartbeat(): void {
+  let count = 1;
+  setInterval(() => {
+    console.log(`💓 Application heartbeat... (${count++})`);
+  }, 10000);
+}
+
+function monitorMemory(): void {
+  setInterval(() => {
+    const used = process.memoryUsage();
+    console.log(
+      `📊 Memory Usage - Heap Used: ${(used.heapUsed / 1024 / 1024).toFixed(2)} MB`,
+    );
+  }, 60000);
+}
