@@ -5,25 +5,22 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { Observable, tap } from 'rxjs';
-import { Request as ExpressRequest } from 'express';
-import { USER_ROLES } from '@/modules/auth/dto/all.roles.dto';
+import { Request } from 'express';
 
 export interface RequestUser {
   id: number;
   email: string;
-  role: string | USER_ROLES;
+  role: string;
   permissions?: string[];
 }
-export interface CustomRequest extends ExpressRequest {
-  user?: RequestUser;
-}
+type CustomRequest = Request & { user?: RequestUser };
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const now = Date.now();
-    const request = context.switchToHttp().getRequest<CustomRequest>();
 
+    const request = context.switchToHttp().getRequest<CustomRequest>();
     const method = request.method;
     const url = request.url;
 
