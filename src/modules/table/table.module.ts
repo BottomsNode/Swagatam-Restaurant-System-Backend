@@ -5,10 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TableEntity } from './entities/table.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([TableEntity]),
-  ],
+  imports: [TypeOrmModule.forFeature([TableEntity])],
   controllers: [TableController],
-  providers: [TableService]
+  providers: [TableService],
 })
-export class TableModule { }
+export class TableModule {}

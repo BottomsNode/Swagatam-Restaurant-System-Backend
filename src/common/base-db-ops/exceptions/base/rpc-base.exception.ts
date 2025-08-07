@@ -1,5 +1,5 @@
-import { isArray, isObject } from "common/base-db-ops/utils";
-import { RpcException } from "@nestjs/microservices";
+import { isArray, isObject } from 'common/base-db-ops/utils';
+import { RpcException } from '@nestjs/microservices';
 
 export class RpcBaseException extends RpcException {
   public readonly payload: string | Record<string, unknown>;
@@ -7,7 +7,11 @@ export class RpcBaseException extends RpcException {
   public readonly type: string;
   public readonly isRpc = true;
 
-  constructor(payload: string | Record<string, any>, status: number, errorType?: string) {
+  constructor(
+    payload: string | Record<string, any>,
+    status: number,
+    errorType?: string,
+  ) {
     super(payload);
     this.payload = payload;
     this.status = status;
@@ -35,11 +39,18 @@ export class RpcBaseException extends RpcException {
     };
   }
 
-  public static createPayload(objectOrError?: object | string, description?: string, statusCode?: number): object {
+  public static createPayload(
+    objectOrError?: object | string,
+    description?: string,
+    statusCode?: number,
+  ): object {
     if (!objectOrError) {
       return { statusCode, message: description };
     }
 
-    return isObject(objectOrError) && !isArray(objectOrError) ? (objectOrError as object) : { statusCode, message: objectOrError, error: description };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    return isObject(objectOrError) && !isArray(objectOrError)
+      ? (objectOrError as object)
+      : { statusCode, message: objectOrError, error: description };
   }
 }

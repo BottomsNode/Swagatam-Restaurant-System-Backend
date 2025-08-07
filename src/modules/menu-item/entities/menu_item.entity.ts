@@ -1,47 +1,56 @@
-import { AutoMap } from "@automapper/classes";
-import { CategoryEntity } from "../../../modules/category/entities/category.entity";
-import { OrderItemEntity } from "../../../modules/order-item/entities/order_item.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { AutoMap } from '@automapper/classes';
+import { CategoryEntity } from '../../../modules/category/entities/category.entity';
+import { OrderItemEntity } from '../../../modules/order-item/entities/order_item.entity';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class MenuItemEntity {
-    @AutoMap()
-    @PrimaryGeneratedColumn()
-    id: number;
+  @AutoMap()
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @AutoMap()
-    @Column()
-    name: string
+  @AutoMap()
+  @Column()
+  name: string;
 
-    @AutoMap()
-    @Column({ type: "decimal", precision: 10, scale: 2 })
-    price: number
+  @AutoMap()
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  price: number;
 
-    @AutoMap()
-    @Column({ default: 20})
-    quantityAvailable: number;
+  @AutoMap()
+  @Column({ default: 20 })
+  quantityAvailable: number;
 
-    @AutoMap()
-    @Column({ default: 'empty' })
-    description: string;
+  @AutoMap()
+  @Column({ default: 'empty' })
+  description: string;
 
-    @AutoMap()
-    @ManyToOne(() => CategoryEntity, (category) => category.menuItems)
-    category: CategoryEntity;
+  @AutoMap()
+  @ManyToOne(() => CategoryEntity, (category) => category.menuItems)
+  category: CategoryEntity;
 
-    @AutoMap()
-    @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.menuItem)
-    orderItems: OrderItemEntity[];
+  @AutoMap()
+  @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.menuItem)
+  orderItems: OrderItemEntity[];
 
-    @Column({ default: true })
-    isActive: boolean;
+  @Column({ default: true })
+  isActive: boolean;
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @UpdateDateColumn()
-    updatedAt: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
 
-    @DeleteDateColumn()
-    deletedAt: Date | null;
+  @DeleteDateColumn()
+  deletedAt: Date | null;
 }

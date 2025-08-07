@@ -1,38 +1,45 @@
-import { AutoMap } from "@automapper/classes";
-import { OrderEntity } from "../../../modules/order/entities/order.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { AutoMap } from '@automapper/classes';
+import { OrderEntity } from '../../../modules/order/entities/order.entity';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 export enum TableStatus {
-    AVAILABLE = 'AVAILABLE',
-    OCCUPIED = 'OCCUPIED',
+  AVAILABLE = 'AVAILABLE',
+  OCCUPIED = 'OCCUPIED',
 }
 @Entity()
 export class TableEntity {
+  @AutoMap()
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @AutoMap()
-    @PrimaryGeneratedColumn()
-    id: number;
+  @AutoMap()
+  @Column()
+  tableNumber: number;
 
-    @AutoMap()
-    @Column()
-    tableNumber: number;
+  @AutoMap()
+  @Column({ type: 'enum', enum: TableStatus, default: TableStatus.AVAILABLE })
+  status: TableStatus;
 
-    @AutoMap()
-    @Column({ type: 'enum', enum: TableStatus, default: TableStatus.AVAILABLE })
-    status: TableStatus;
+  @OneToMany(() => OrderEntity, (order) => order.table)
+  orders: OrderEntity[];
 
-    @OneToMany(() => OrderEntity, (order) => order.table)
-    orders: OrderEntity[];
+  @Column({ default: true })
+  isActive: boolean;
 
-    @Column({ default: true })
-    isActive: boolean;
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
 
-    @UpdateDateColumn()
-    updatedAt: Date;
-
-    @DeleteDateColumn()
-    deletedAt: Date | null;
+  @DeleteDateColumn()
+  deletedAt: Date | null;
 }

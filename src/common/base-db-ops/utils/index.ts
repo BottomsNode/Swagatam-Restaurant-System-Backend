@@ -66,9 +66,15 @@ export {
   replace,
   sortBy,
   pullAt,
-} from "lodash";
+} from 'lodash';
 
-export { v4 as uuid, parse as parseUuid, stringify as stringifyUuid, validate as validateUuid, NIL as ZERO_UUID } from "uuid";
+export {
+  v4 as uuid,
+  parse as parseUuid,
+  stringify as stringifyUuid,
+  validate as validateUuid,
+  NIL as ZERO_UUID,
+} from 'uuid';
 
-export * from "./any"
-export * from "./array"
+export * from './any';
+export * from './array';

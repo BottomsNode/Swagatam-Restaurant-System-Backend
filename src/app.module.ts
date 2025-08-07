@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { DatabaseService } from './config/connection.msg';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppDataSource } from './config/typeorm.config';
@@ -27,10 +27,10 @@ import { TableController } from './modules/table/table.controller';
 import { StaffController } from './modules/staff/staff.controller';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { LoggingInterceptors } from './common/interceptors/logging.interceptor';
 import { SeederModule } from './seeders/seeder.module';
 import { SystemRoleGuard } from './modules/auth/guards/sys-role.guard';
 import { LoggerModule } from 'nestjs-pino';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -42,7 +42,10 @@ import { LoggerModule } from 'nestjs-pino';
     }),
     LoggerModule.forRoot({
       pinoHttp: {
-        transport: process.env.NODE_ENV !== 'production' ? { target: 'pino-pretty' } : undefined,
+        transport:
+          process.env.NODE_ENV !== 'production'
+            ? { target: 'pino-pretty' }
+            : undefined,
       },
     }),
     ThrottlerModule.forRoot({
@@ -74,26 +77,25 @@ import { LoggerModule } from 'nestjs-pino';
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: LoggingInterceptors
-
+      useClass: LoggingInterceptor,
     },
     {
       provide: APP_GUARD,
-      useClass: SystemRoleGuard
+      useClass: SystemRoleGuard,
     },
   ],
   exports: [CommonMapper],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes(CustomerController),
-      consumer.apply(AuthMiddleware).forRoutes(OrderController),
-      consumer.apply(AuthMiddleware).forRoutes(OrderItemController),
-      consumer.apply(AuthMiddleware).forRoutes(MenuItemController),
-      consumer.apply(AuthMiddleware).forRoutes(CategoryController),
-      consumer.apply(AuthMiddleware).forRoutes(TableController),
-      consumer.apply(AuthMiddleware).forRoutes(StaffController),
-      consumer.apply(LoggingMiddleware).forRoutes('*');
+    consumer.apply(AuthMiddleware).forRoutes(CustomerController);
+    consumer.apply(AuthMiddleware).forRoutes(OrderController);
+    consumer.apply(AuthMiddleware).forRoutes(OrderItemController);
+    consumer.apply(AuthMiddleware).forRoutes(MenuItemController);
+    consumer.apply(AuthMiddleware).forRoutes(CategoryController);
+    consumer.apply(AuthMiddleware).forRoutes(TableController);
+    consumer.apply(AuthMiddleware).forRoutes(StaffController);
+    consumer.apply(LoggingMiddleware).forRoutes('*');
     // OR for a specific route:
     // .forRoutes({ path: 'your-route', method: RequestMethod.GET });
   }

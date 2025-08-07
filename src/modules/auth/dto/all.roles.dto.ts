@@ -1,10 +1,10 @@
 export enum USER_ROLES {
-    ADMIN = 'admin',
-    CUSTOMER = 'customer',
+  ADMIN = 'admin',
+  CUSTOMER = 'customer',
 }
 
 export enum STAFF_ROLES {
-    WAITER = 'WAITER',
-    CHEF = 'CHEF',
-    MANAGER = 'MANAGER',
+  WAITER = 'WAITER',
+  CHEF = 'CHEF',
+  MANAGER = 'MANAGER',
 }

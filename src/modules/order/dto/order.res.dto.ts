@@ -1,38 +1,37 @@
-import { BaseResponseDto } from "@/common/dto/base.res.dto";
-import { OrderItemResponseDto } from "@/modules/order-item/dto/orderItem.res.dto";
-import { AutoMap } from "@automapper/classes";
-import { ApiProperty } from "@nestjs/swagger";
+import { BaseResponseDto } from '@/common/dto/base.res.dto';
+import { OrderItemResponseDto } from '@/modules/order-item/dto/orderItem.res.dto';
+import { AutoMap } from '@automapper/classes';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class OrderResponseDto extends BaseResponseDto {
+  @AutoMap()
+  @ApiProperty()
+  orderTime: Date;
 
-    @AutoMap()
-    @ApiProperty()
-    orderTime: Date;
+  @AutoMap()
+  @ApiProperty()
+  totalAmount: number;
 
-    @AutoMap()
-    @ApiProperty()
-    totalAmount: number;
+  @AutoMap()
+  @ApiProperty()
+  status: string;
 
-    @AutoMap()
-    @ApiProperty()
-    status: string;
-    
-    @ApiProperty()
-    @AutoMap()
-    // customer?: CustomerDto;
-    customer: { id: number };
+  @ApiProperty()
+  @AutoMap()
+  // customer?: CustomerDto;
+  customer: { id: number };
 
-    @AutoMap()
-    @ApiProperty()
-    // table?: TableDto;
-    table: { id: number };
+  @AutoMap()
+  @ApiProperty()
+  // table?: TableDto;
+  table: { id: number };
 
-    @AutoMap()
-    @ApiProperty()
-    // staff?: StaffDto;
-    staff: { id: number };
+  @AutoMap()
+  @ApiProperty()
+  // staff?: StaffDto;
+  staff: { id: number };
 
-    @AutoMap()
-    @ApiProperty()
-    items?: OrderItemResponseDto[];
+  @AutoMap()
+  @ApiProperty()
+  items?: OrderItemResponseDto[];
 }

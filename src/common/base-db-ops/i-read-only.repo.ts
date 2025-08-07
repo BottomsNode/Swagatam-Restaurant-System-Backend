@@ -1,6 +1,11 @@
-import { Filter, PageableFilter, IPageable } from "./filtering";
+import { Filter, PageableFilter, IPageable } from './filtering';
 
-export interface IReadOnlyRepo<T, TKey, TPageableFilter = PageableFilter<T, TKey>, TFilter = Filter<T, TKey>> {
+export interface IReadOnlyRepo<
+  T,
+  TKey,
+  TPageableFilter = PageableFilter<T, TKey>,
+  TFilter = Filter<T, TKey>,
+> {
   getAsync(pk: TKey): Promise<T>;
   allAsync(filter?: TFilter): Promise<T[]>;
   pagedAsync(filter?: TPageableFilter): Promise<IPageable<T>>;

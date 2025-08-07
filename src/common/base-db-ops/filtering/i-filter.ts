@@ -1,4 +1,4 @@
-import { EOrder } from "./e-order";
+import { EOrder } from './e-order';
 
 export interface IFilterBase<TId = string> {
   $ids?: TId[];
@@ -16,4 +16,6 @@ export interface IResolvableUrl {
 }
 
 export type Filter<T, TId = string> = Partial<T & IFilterBase<TId>>;
-export type PageableFilter<T, TId = string> = Partial<T & IPageableFilterBase<TId>>;
+export type PageableFilter<T, TId = string> = Partial<
+  T & IPageableFilterBase<TId>
+>;

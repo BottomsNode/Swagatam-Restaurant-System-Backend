@@ -5,10 +5,8 @@ import { MenuItemEntity } from './entities/menu_item.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([MenuItemEntity]),
-  ],
+  imports: [TypeOrmModule.forFeature([MenuItemEntity])],
   controllers: [MenuItemController],
-  providers: [MenuItemService]
+  providers: [MenuItemService],
 })
-export class MenuItemModule { }
+export class MenuItemModule {}

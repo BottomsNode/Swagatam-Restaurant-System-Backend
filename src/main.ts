@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { RpcGlobalExceptionInterceptor } from './common/interceptors/exception.interceptor';
@@ -9,12 +9,14 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true,
-    transformOptions: {
-      enableImplicitConversion: true,
-    },
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
 
   app.useGlobalInterceptors(new RpcGlobalExceptionInterceptor());
 
@@ -27,9 +29,13 @@ async function bootstrap() {
     .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup(`${configService.get('SWAGGER_DOCS')}`, app, documentFactory);
+  SwaggerModule.setup(
+    `${configService.get('SWAGGER_DOCS')}`,
+    app,
+    documentFactory,
+  );
 
-  await app.listen(configService.get('PORT')!);
+  await app.listen(configService.get('PORT'));
 
   // Start background tasks
   runHeartbeat();

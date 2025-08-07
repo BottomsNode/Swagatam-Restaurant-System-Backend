@@ -1,4 +1,4 @@
 export enum EOrder {
   Asc = 'asc',
-  Desc = 'desc'
+  Desc = 'desc',
 }

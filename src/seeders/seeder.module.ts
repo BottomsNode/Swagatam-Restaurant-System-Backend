@@ -10,21 +10,21 @@ import { AppDataSource } from '../config/typeorm.config';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
-    imports: [
-        ConfigModule.forRoot({
-            envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
-            isGlobal: true,
-        }),
-        TypeOrmModule.forRoot(AppDataSource.options),
-        TypeOrmModule.forFeature([
-            CustomerEntity,
-            StaffEntity,
-            TableEntity,
-            MenuItemEntity,
-            CategoryEntity,
-        ]),
-    ],
-    providers: [DatabaseSeeder],
-    exports: [DatabaseSeeder],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRoot(AppDataSource.options),
+    TypeOrmModule.forFeature([
+      CustomerEntity,
+      StaffEntity,
+      TableEntity,
+      MenuItemEntity,
+      CategoryEntity,
+    ]),
+  ],
+  providers: [DatabaseSeeder],
+  exports: [DatabaseSeeder],
 })
-export class SeederModule { }
+export class SeederModule {}

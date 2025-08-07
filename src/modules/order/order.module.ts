@@ -12,11 +12,11 @@ import { MenuItemEntity } from '../menu-item/entities/menu_item.entity';
     // TypeOrmModule.forFeature([OrderEntity]),
     TypeOrmModule.forFeature([OrderEntity, MenuItemEntity, TableEntity]),
     AuthModule,
-  //   AutomapperModule.forRoot({
-  //     strategyInitializer: classes(),
-  // }),
+    //   AutomapperModule.forRoot({
+    //     strategyInitializer: classes(),
+    // }),
   ],
   controllers: [OrderController],
-  providers: [OrderService]
+  providers: [OrderService],
 })
-export class OrderModule { }
+export class OrderModule {}

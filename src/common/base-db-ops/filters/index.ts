@@ -1,1 +1,1 @@
-export * from "./rpc-global-exception.filter";
+export * from './rpc-global-exception.filter';

@@ -5,14 +5,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomerEntity } from './entities/customer.entity';
 import { CustomerRepository } from './repository/customer.repository';
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([CustomerEntity]),
-  ],
+  imports: [TypeOrmModule.forFeature([CustomerEntity])],
   controllers: [CustomerController],
-  providers: [CustomerService,{
-    provide: 'CustomerRepository',
-    useClass: CustomerRepository
-  }],
-  exports : [CustomerService,'CustomerRepository'],
+  providers: [
+    CustomerService,
+    {
+      provide: 'CustomerRepository',
+      useClass: CustomerRepository,
+    },
+  ],
+  exports: [CustomerService, 'CustomerRepository'],
 })
-export class CustomerModule { }
+export class CustomerModule {}

@@ -7,18 +7,28 @@ dotenv.config({ path: './.env' });
 
 const jwtSecret = process.env.JWT_SECRET;
 
+export interface JwtPayload {
+  sub: number;
+  email: string;
+  role: string;
+  permissions?: string[];
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor(private authService: AuthService) {
-        super({
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            ignoreExpiration: false,
-            secretOrKey: `${jwtSecret}`,
-        });
-    }
+  constructor(private authService: AuthService) {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      secretOrKey: `${jwtSecret}`,
+    });
+  }
 
-    async validate(payload: any) {
-        console.log('JWT Strategy Validate (PAYLOAD) >>>>>>>>>>>>>>>>>>>>>>>>>> :', payload);
-        return { id: payload.sub, email: payload.email };
-    }
+  validate(payload: JwtPayload) {
+    console.log(
+      'JWT Strategy Validate (PAYLOAD) >>>>>>>>>>>>>>>>>>>>>>>>>> :',
+      payload,
+    );
+    return { id: payload.sub, email: payload.email };
+  }
 }
